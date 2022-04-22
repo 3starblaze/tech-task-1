@@ -1,9 +1,12 @@
 import React from "react";
+import "./index.scss";
 
 export default class Root extends React.Component {
   render() {
     return (
-      <button onClick={ () => alert('Thank you!')}>
+      <button
+      id="press-me-btn"
+      onClick={ () => alert('Thank you!')}>
         Press me :3
       </button>
     );

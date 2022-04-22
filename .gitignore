@@ -1,2 +1,7 @@
 .env
 mysql
+
+node_modules/
+
+public/
+!public/index.php

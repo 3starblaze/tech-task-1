@@ -2,6 +2,7 @@
 mysql
 
 node_modules/
+vendor/
 
 public/
 !public/index.php

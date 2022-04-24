@@ -19,10 +19,11 @@ class ProductDisc extends Product
     public function __construct(
         \PDO $pdo,
         string $sku,
+        string $name,
         int $price,
         int $discSize
     ) {
-        parent::__construct($pdo, $sku, $price);
+        parent::__construct($pdo, $sku, $name, $price);
 
         $statement = $pdo->prepare('INSERT INTO discs VALUES(null, ?, ?)');
 

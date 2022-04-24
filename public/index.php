@@ -19,24 +19,32 @@
             $_ENV['DB_PASSWORD'],
         );
 
-        $product = new Product\Product($pdo, "ABC123123", 499);
+        $product = new Product\Product($pdo, "ABC123123", "Abstract Item", 499);
 
         print(
             sprintf(
                 "SKU: %s\n, price: %s\n, id: %s\n",
                 $product->getSku(),
+                $product->getName(),
                 $product->getPrice(),
                 $product->getDatabaseId(),
         ));
 
         print("---");
 
-        $disc = new ProductDisc\ProductDisc($pdo, "DSC123123", 199, 1000);
+        $disc = new ProductDisc\ProductDisc(
+            $pdo,
+            "DSC123123",
+            "Copyrighted music",
+            199,
+            1000
+        );
 
         print(
             sprintf(
                 "SKU: %s\n, price: %s\n, id: %s, disc size: %s\n",
                 $disc->getSku(),
+                $disc->getName(),
                 $disc->getPrice(),
                 $disc->getDatabaseId(),
                 $disc->getDiscSize(),

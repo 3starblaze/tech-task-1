@@ -8,6 +8,7 @@
         require __DIR__ . '/../vendor/autoload.php';
 
         use Dotenv\Dotenv;
+        use TechTask\Product;
 
         Dotenv::createImmutable(__DIR__.'/../')->load();
 
@@ -17,11 +18,15 @@
             $_ENV['DB_PASSWORD'],
         );
 
-        echo("executing...");
-        var_dump($pdo->exec('INSERT INTO products VALUES(null, "SKU123123", 3200);'));
-        var_dump($pdo->query('SELECT * FROM products;')->fetchAll());
+        $product = new Product\Product($pdo, "ABC123123", 499);
 
-        echo("Great success!");
+        print(
+            sprintf(
+                "SKU: %s\n, price: %s\n, id: %s\n",
+                $product->getSku(),
+                $product->getPrice(),
+                $product->getDatabaseId(),
+        ));
         ?>
         <div id="root"></div>
         <script src="./app.bundle.js"></script>

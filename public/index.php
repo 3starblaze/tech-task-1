@@ -10,6 +10,7 @@
         use Dotenv\Dotenv;
         use TechTask\Product;
         use TechTask\ProductDisc;
+        use TechTask\ProductBook;
 
         Dotenv::createImmutable(__DIR__.'/../')->load();
 
@@ -23,7 +24,7 @@
 
         print(
             sprintf(
-                "SKU: %s\n, price: %s\n, id: %s\n",
+                "SKU: %s\n, name: %s\n, price: %s\n, id: %s\n",
                 $product->getSku(),
                 $product->getName(),
                 $product->getPrice(),
@@ -42,12 +43,33 @@
 
         print(
             sprintf(
-                "SKU: %s\n, price: %s\n, id: %s, disc size: %s\n",
+                "SKU: %s\n, name: %s\n, price: %s\n, id: %s\n disc size: %s\n",
                 $disc->getSku(),
                 $disc->getName(),
                 $disc->getPrice(),
                 $disc->getDatabaseId(),
                 $disc->getDiscSize(),
+            )
+        );
+
+        print("---");
+
+        $book = new ProductBook\ProductBook(
+            $pdo,
+            "BKK123123",
+            "Learn PHP in 24 hours",
+            23.99,
+            0.5
+        );
+
+        print(
+            sprintf(
+                "SKU: %s\n, name: %s\n price: %s\n, id: %s, weight: %s\n",
+                $book->getSku(),
+                $book->getName(),
+                $book->getPrice(),
+                $book->getDatabaseId(),
+                $book->getWeight(),
             )
         );
         ?>

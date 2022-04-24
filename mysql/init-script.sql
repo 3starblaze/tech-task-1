@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS discs(
 CREATE TABLE IF NOT EXISTS books(
        id INT AUTO_INCREMENT PRIMARY KEY,
        product_id INT NOT NULL,
-       weight NUMERIC NOT NULL,
+       weight FLOAT(10, 2) NOT NULL,
        FOREIGN KEY (product_id) REFERENCES products(id)
 );
 

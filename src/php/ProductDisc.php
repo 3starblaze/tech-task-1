@@ -6,10 +6,8 @@ use TechTask\Product\Product;
 
 class ProductDisc extends Product
 {
-    /**
-     * This model's id in `discs` table.
-     */
-    private $discDataId;
+    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
+        = 'INSERT INTO discs VALUES(null, ?, ?)';
 
     /**
      * Disc size in MB.
@@ -25,14 +23,7 @@ class ProductDisc extends Product
     ) {
         parent::__construct($pdo, $sku, $name, $price);
 
-        $statement = $pdo->prepare('INSERT INTO discs VALUES(null, ?, ?)');
-
-        if (!$statement->execute(array($this->getDatabaseId(), $discSize))) {
-            // TODO Destroy Product entry here
-            die('ProductDisc failed to be created!');
-        }
-
-        $this->discDataId = $pdo->lastInsertId();
+        $this->tryCreatingExtraAttributes($pdo, array($discSize));
         $this->discSize = $discSize;
     }
 

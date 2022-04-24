@@ -6,6 +6,9 @@ use TechTask\Product\Product;
 
 class ProductBook extends Product
 {
+    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
+        = 'INSERT INTO discs VALUES(null, ?, ?)';
+
     private $bookDataId;
 
     /**
@@ -22,14 +25,7 @@ class ProductBook extends Product
     ) {
         parent::__construct($pdo, $sku, $name, $price);
 
-        $statement = $pdo->prepare('INSERT INTO books VALUES(null, ?, ?)');
-
-        if (!$statement->execute(array($this->getDatabaseId(), $weight))) {
-            // TODO Destroy Product entry here
-            die('ProductBook failed to be created!');
-        }
-
-        $this->bookDataId = $pdo->lastInsertId();
+        $this->tryCreatingExtraAttributes($pdo, array($weight));
         $this->weight = $weight;
     }
 

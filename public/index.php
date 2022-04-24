@@ -8,7 +8,6 @@
         require __DIR__ . '/../vendor/autoload.php';
 
         use Dotenv\Dotenv;
-        use TechTask\Product;
         use TechTask\ProductDisc;
         use TechTask\ProductBook;
         use TechTask\ProductFurniture;
@@ -20,17 +19,6 @@
             $_ENV['DB_USERNAME'],
             $_ENV['DB_PASSWORD'],
         );
-
-        $product = new Product\Product($pdo, "ABC123123", "Abstract Item", 499);
-
-        print(
-            sprintf(
-                "SKU: %s\n, name: %s\n, price: %s\n, id: %s\n",
-                $product->getSku(),
-                $product->getName(),
-                $product->getPrice(),
-                $product->getDatabaseId(),
-        ));
 
         print("---");
 

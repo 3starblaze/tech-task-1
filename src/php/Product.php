@@ -5,15 +5,20 @@ namespace TechTask\Product;
 /**
  * Product database model which handles updates in database.
  */
-class Product
+abstract class Product
 {
+    protected const EXTRA_ATTRIBUTE_INSERT_QUERY = '';
+
     private $sku;
 
     private $name;
 
     private $price;
 
-    private $databaseId;
+    /**
+     * The product's id in EXTRA_ATTRIBUTE_TABLE_NAME table.
+     */
+    private $extraAttributeId;
 
     /**
      * Product constructor.
@@ -40,6 +45,32 @@ class Product
         $this->sku = $sku;
         $this->name = $name;
         $this->price = $price;
+    }
+
+    /**
+     * Helper method that tries to create table with extra attributes and
+     * reports query problems if the creation was not successful. Note:
+     * databaseId is already provided for the query.
+     *
+     * @param $pdo The PDO object on which a query is called.
+     * @param $args Values that are passed to the query.
+     */
+    protected function tryCreatingExtraAttributes(\PDO $pdo, array $args)
+    {
+        $statement = $pdo->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
+        $executeArgs = array_merge(array($this->getDatabaseId()), $args);
+
+        // TODO Hide this information in production
+        if (!$statement->execute($executeArgs)) {
+            // TODO Destroy Product entry here
+            echo('executeArgs: ');
+            var_dump($executeArgs);
+            echo('error info: ');
+            var_dump($statement->errorInfo());
+            die('X failed to be created!');
+        } else {
+            $this->extraAttributeId = $pdo->lastInsertId();
+        }
     }
 
     public function getSku()

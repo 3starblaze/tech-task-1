@@ -6,7 +6,8 @@ use TechTask\Product\Product;
 
 class ProductFurniture extends Product
 {
-    private $furnitureDataId;
+    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
+        = 'INSERT INTO furniture VALUES(null, ?, ?, ?, ?)';
 
     /**
      * Furniture height in cm.
@@ -34,18 +35,11 @@ class ProductFurniture extends Product
     ) {
         parent::__construct($pdo, $sku, $name, $price);
 
-        $statement = $pdo->prepare(
-            'INSERT INTO furniture VALUES(null, ?, ?, ?, ?)'
+        $this->tryCreatingExtraAttributes(
+            $pdo,
+            array($height, $width, $length),
         );
 
-        $args = array($this->getDatabaseId(), $height, $width, $length);
-
-        if (!$statement->execute($args)) {
-            // TODO Destroy Product entry here
-            die('ProductFurniture failed to be created!');
-        }
-
-        $this->furnitureDataId = $pdo->lastInsertId();
         $this->height = $height;
         $this->width = $width;
         $this->length = $length;

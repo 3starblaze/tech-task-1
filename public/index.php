@@ -11,6 +11,7 @@
         use TechTask\Product;
         use TechTask\ProductDisc;
         use TechTask\ProductBook;
+        use TechTask\ProductFurniture;
 
         Dotenv::createImmutable(__DIR__.'/../')->load();
 
@@ -70,6 +71,31 @@
                 $book->getPrice(),
                 $book->getDatabaseId(),
                 $book->getWeight(),
+            )
+        );
+
+        print("---");
+
+        $furniture = new ProductFurniture\ProductFurniture(
+            $pdo,
+            "FNT123123",
+            "Wooden box",
+            99.99,
+            120,
+            120,
+            240
+        );
+
+        print(
+            sprintf(
+                "SKU: %s\n, name: %s\n price: %s\n, id: %s, HxWxL: %sx%sx%s\n",
+                $furniture->getSku(),
+                $furniture->getName(),
+                $furniture->getPrice(),
+                $furniture->getDatabaseId(),
+                $furniture->getHeight(),
+                $furniture->getWidth(),
+                $furniture->getLength(),
             )
         );
         ?>

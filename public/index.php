@@ -17,6 +17,10 @@
             $_ENV['DB_PASSWORD'],
         );
 
+        echo("executing...");
+        var_dump($pdo->exec('INSERT INTO products VALUES(null, "SKU123123", 3200);'));
+        var_dump($pdo->query('SELECT * FROM products;')->fetchAll());
+
         echo("Great success!");
         ?>
         <div id="root"></div>

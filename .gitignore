@@ -1,5 +1,6 @@
 .env
-mysql
+mysql/*
+!mysql/init-script.sql
 
 node_modules/
 vendor/

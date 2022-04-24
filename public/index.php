@@ -9,6 +9,7 @@
 
         use Dotenv\Dotenv;
         use TechTask\Product;
+        use TechTask\ProductDisc;
 
         Dotenv::createImmutable(__DIR__.'/../')->load();
 
@@ -27,6 +28,20 @@
                 $product->getPrice(),
                 $product->getDatabaseId(),
         ));
+
+        print("---");
+
+        $disc = new ProductDisc\ProductDisc($pdo, "DSC123123", 199, 1000);
+
+        print(
+            sprintf(
+                "SKU: %s\n, price: %s\n, id: %s, disc size: %s\n",
+                $disc->getSku(),
+                $disc->getPrice(),
+                $disc->getDatabaseId(),
+                $disc->getDiscSize(),
+            )
+        );
         ?>
         <div id="root"></div>
         <script src="./app.bundle.js"></script>

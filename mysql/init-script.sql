@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS products(
 CREATE TABLE IF NOT EXISTS discs(
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
-    space INT NOT NULL,
+    disc_size INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 

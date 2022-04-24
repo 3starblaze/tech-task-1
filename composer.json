@@ -1,6 +1,6 @@
 {
     "autoload": {
-        "psr-4": {"TechTask\\Product\\": "src/php/"}
+        "classmap": ["src/php/"]
     },
     "require": {
         "vlucas/phpdotenv": "^5.4"

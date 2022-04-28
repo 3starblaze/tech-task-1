@@ -1,93 +1,17 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    </head>
-    <body>
-        <h1>Hello, World!</h1>
-        <?php
-        require __DIR__ . '/../vendor/autoload.php';
+<?php
 
-        use Dotenv\Dotenv;
-        use TechTask\ProductDisc;
-        use TechTask\ProductBook;
-        use TechTask\ProductFurniture;
+require __DIR__ . '/../vendor/autoload.php';
 
-        Dotenv::createImmutable(__DIR__.'/../')->load();
+use Dotenv\Dotenv;
+use TechTask\Router\Router;
 
-        $pdo = new PDO(
-            sprintf("mysql:dbname=%s;host=%s", $_ENV['DB_NAME'], $_ENV['DB_HOST']),
-            $_ENV['DB_USERNAME'],
-            $_ENV['DB_PASSWORD'],
-        );
+Dotenv::createImmutable(__DIR__.'/../')->load();
+$router = new Router();
 
-        print("---");
+$router->registerRoute('/', function() {
+    require __DIR__ . '/../src/php/views/index.php';
+});
 
-        $disc = new ProductDisc\ProductDisc(
-            $pdo,
-            "DSC123123",
-            "Copyrighted music",
-            199,
-            1000
-        );
+$router->handleRequest();
 
-        print(
-            sprintf(
-                "SKU: %s\n, name: %s\n, price: %s\n, id: %s\n disc size: %s\n",
-                $disc->getSku(),
-                $disc->getName(),
-                $disc->getPrice(),
-                $disc->getDatabaseId(),
-                $disc->getDiscSize(),
-            )
-        );
-
-        print("---");
-
-        $book = new ProductBook\ProductBook(
-            $pdo,
-            "BKK123123",
-            "Learn PHP in 24 hours",
-            23.99,
-            0.5
-        );
-
-        print(
-            sprintf(
-                "SKU: %s\n, name: %s\n price: %s\n, id: %s, weight: %s\n",
-                $book->getSku(),
-                $book->getName(),
-                $book->getPrice(),
-                $book->getDatabaseId(),
-                $book->getWeight(),
-            )
-        );
-
-        print("---");
-
-        $furniture = new ProductFurniture\ProductFurniture(
-            $pdo,
-            "FNT123123",
-            "Wooden box",
-            99.99,
-            120,
-            120,
-            240
-        );
-
-        print(
-            sprintf(
-                "SKU: %s\n, name: %s\n price: %s\n, id: %s, HxWxL: %sx%sx%s\n",
-                $furniture->getSku(),
-                $furniture->getName(),
-                $furniture->getPrice(),
-                $furniture->getDatabaseId(),
-                $furniture->getHeight(),
-                $furniture->getWidth(),
-                $furniture->getLength(),
-            )
-        );
-        ?>
-        <div id="root"></div>
-        <script src="./app.bundle.js"></script>
-    </body>
-</html>
+?>

@@ -73,6 +73,11 @@ abstract class Product
         }
     }
 
+    /**
+     * Convert the class to JSON for sending it via API.
+     */
+    abstract public function toJson();
+
     public function getSku()
     {
         return $this->sku;

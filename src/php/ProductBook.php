@@ -29,6 +29,17 @@ class ProductBook extends Product
         $this->weight = $weight;
     }
 
+    public function toJson()
+    {
+        return json_encode(array(
+            'id' => $this->getDatabaseId(),
+            'sku' => $this->getSku(),
+            'name' => $this->getName(),
+            'price' => $this->getPrice(),
+            'weight' => $this->getWeight(),
+        ));
+    }
+
     public function getWeight()
     {
         return $this->weight;

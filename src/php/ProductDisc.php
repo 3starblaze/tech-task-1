@@ -27,6 +27,17 @@ class ProductDisc extends Product
         $this->discSize = $discSize;
     }
 
+    public function toJson()
+    {
+        return json_encode(array(
+            'id' => $this->getDatabaseId(),
+            'sku' => $this->getSku(),
+            'name' => $this->getName(),
+            'price' => $this->getPrice(),
+            'discSize' => $this->getDiscSize(),
+        ));
+    }
+
     public function getDiscSize()
     {
         return $this->discSize;

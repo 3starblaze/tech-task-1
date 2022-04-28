@@ -45,6 +45,19 @@ class ProductFurniture extends Product
         $this->length = $length;
     }
 
+    public function toJson()
+    {
+        return json_encode(array(
+            'id' => $this->getDatabaseId(),
+            'sku' => $this->getSku(),
+            'name' => $this->getName(),
+            'price' => $this->getPrice(),
+            'height' => $this->getHeight(),
+            'width' => $this->getWidth(),
+            'length' => $this->getLength(),
+        ));
+    }
+
     public function getHeight()
     {
         return $this->height;

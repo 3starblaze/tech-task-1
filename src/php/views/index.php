@@ -38,6 +38,10 @@ $products = array(
     ),
 );
 
+foreach($products as $product) {
+    $product->save();
+}
+
 ?>
 <!DOCTYPE html>
 <html>

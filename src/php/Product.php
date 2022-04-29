@@ -21,6 +21,11 @@ abstract class Product
     private $price;
 
     /**
+     * The id of this class' table or null if the model is not in database.
+     */
+    private ?int $databaseId = null;
+
+    /**
      * The product's id in EXTRA_ATTRIBUTE_TABLE_NAME table.
      */
     private $extraAttributeId;
@@ -36,16 +41,6 @@ abstract class Product
         string $name,
         int $price
     ) {
-        $isQuerySuccessful
-            = self::withPdo()
-            ->prepare('INSERT INTO products VALUES(null, ?, ?, ?)')
-            ->execute(array($sku, $name, $price));
-
-        if (!$isQuerySuccessful) {
-            die('Product failed to be created!');
-        }
-
-        $this->databaseId = self::withPdo()->lastInsertId();
         $this->sku = $sku;
         $this->name = $name;
         $this->price = $price;
@@ -71,11 +66,14 @@ abstract class Product
      *
      * @param $args Values that are passed to the query.
      */
-    protected function tryCreatingExtraAttributes(array $args)
+    protected function tryCreatingExtraAttributes(): void
     {
         $statement = self::withPdo()
                    ->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
-        $executeArgs = array_merge(array($this->getDatabaseId()), $args);
+        $executeArgs = array_merge(
+            array($this->getDatabaseId()),
+            $this->getExtraAttributeArgs(),
+        );
 
         // TODO Hide this information in production
         if (!$statement->execute($executeArgs)) {
@@ -91,9 +89,34 @@ abstract class Product
     }
 
     /**
+     * Return array of arguments that is used to create extra attribute table.
+     * This array should not contain databaseId since it will be provided
+     * automatically.
+     */
+    abstract protected function getExtraAttributeArgs(): array;
+
+    /**
      * Convert the class to JSON for sending it via API.
      */
     abstract public function toJson();
+
+    public function save(): void
+    {
+        $statement = self::withPdo()
+                   ->prepare('INSERT INTO products VALUES(null, ?, ?, ?)');
+
+        // TODO Hide this information in production
+        if (!$statement->execute(array($this->sku, $this->name, $this->price))) {
+            print('Product failed to be created!');
+            echo('error info: ');
+            var_dump($statement->errorInfo());
+            die;
+        } else {
+            $this->databaseId = self::withPdo()->lastInsertId();
+        }
+
+        $this->tryCreatingExtraAttributes();
+    }
 
     public function getSku()
     {
@@ -110,8 +133,9 @@ abstract class Product
         return $this->price;
     }
 
-    public function getDatabaseId()
+    public function getDatabaseId(): int
     {
-        return $this->databaseId;
+        return $this->databaseId
+            ?? die('Model has no ID because it is not saved!');
     }
 }

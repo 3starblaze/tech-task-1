@@ -23,9 +23,12 @@ class ProductBook extends Product
         float $weight
     ) {
         parent::__construct($sku, $name, $price);
-
-        $this->tryCreatingExtraAttributes(array($weight));
         $this->weight = $weight;
+    }
+
+    protected function getExtraAttributeArgs(): array
+    {
+        return array($this->weight);
     }
 
     public function toJson()

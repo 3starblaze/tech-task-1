@@ -21,9 +21,12 @@ class ProductDisc extends Product
         int $discSize
     ) {
         parent::__construct($sku, $name, $price);
-
-        $this->tryCreatingExtraAttributes(array($discSize));
         $this->discSize = $discSize;
+    }
+
+    protected function getExtraAttributeArgs(): array
+    {
+        return array($this->discSize);
     }
 
     public function toJson()

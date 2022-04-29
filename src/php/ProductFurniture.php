@@ -33,12 +33,14 @@ class ProductFurniture extends Product
         int $length
     ) {
         parent::__construct($sku, $name, $price);
-
-        $this->tryCreatingExtraAttributes(array($height, $width, $length));
-
         $this->height = $height;
         $this->width = $width;
         $this->length = $length;
+    }
+
+    protected function getExtraAttributeArgs(): array
+    {
+        return array($this->height, $this->width, $this->length);
     }
 
     public function toJson()

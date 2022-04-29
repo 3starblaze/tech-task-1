@@ -25,7 +25,6 @@ class ProductFurniture extends Product
     private $length;
 
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price,
@@ -33,12 +32,9 @@ class ProductFurniture extends Product
         int $width,
         int $length
     ) {
-        parent::__construct($pdo, $sku, $name, $price);
+        parent::__construct($sku, $name, $price);
 
-        $this->tryCreatingExtraAttributes(
-            $pdo,
-            array($height, $width, $length),
-        );
+        $this->tryCreatingExtraAttributes(array($height, $width, $length));
 
         $this->height = $height;
         $this->width = $width;

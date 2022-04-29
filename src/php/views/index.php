@@ -1,9 +1,10 @@
 <?php
 
 use Dotenv\Dotenv;
-use TechTask\ProductDisc;
-use TechTask\ProductBook;
-use TechTask\ProductFurniture;
+use TechTask\Product\Product;
+use TechTask\ProductDisc\ProductDisc;
+use TechTask\ProductBook\ProductBook;
+use TechTask\ProductFurniture\ProductFurniture;
 use TechTask\Router\Router;
 
 $pdo = new PDO(
@@ -12,23 +13,22 @@ $pdo = new PDO(
     $_ENV['DB_PASSWORD'],
 );
 
+Product::setPdo($pdo);
+
 $products = array(
-    new ProductDisc\ProductDisc(
-        $pdo,
+    new ProductDisc(
         "DSC123123",
         "Copyrighted music",
         199,
         1000
     ),
-    new ProductBook\ProductBook(
-        $pdo,
+    new ProductBook(
         "BKK123123",
         "Learn PHP in 24 hours",
         23.99,
         0.5
     ),
-    new ProductFurniture\ProductFurniture(
-        $pdo,
+    new ProductFurniture(
         "FNT123123",
         "Wooden box",
         99.99,

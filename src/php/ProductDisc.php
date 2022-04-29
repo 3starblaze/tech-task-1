@@ -15,15 +15,14 @@ class ProductDisc extends Product
     private $discSize;
 
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price,
         int $discSize
     ) {
-        parent::__construct($pdo, $sku, $name, $price);
+        parent::__construct($sku, $name, $price);
 
-        $this->tryCreatingExtraAttributes($pdo, array($discSize));
+        $this->tryCreatingExtraAttributes(array($discSize));
         $this->discSize = $discSize;
     }
 

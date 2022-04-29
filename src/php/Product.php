@@ -9,6 +9,11 @@ abstract class Product
 {
     protected const EXTRA_ATTRIBUTE_INSERT_QUERY = '';
 
+    /**
+     * \PDO instance that is used to communicate to database.
+     */
+    private static ?\PDO $pdo = null;
+
     private $sku;
 
     private $name;
@@ -23,28 +28,40 @@ abstract class Product
     /**
      * Product constructor.
      *
-     * @param $pdo PDO instance which is used to save the product model.
      * @param $sku Stock keeping unit.
      * @param $price The value of product in cents.
      */
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price
     ) {
         $isQuerySuccessful
-            = $pdo->prepare('INSERT INTO products VALUES(null, ?, ?, ?)')
-                  ->execute(array($sku, $name, $price));
+            = self::withPdo()
+            ->prepare('INSERT INTO products VALUES(null, ?, ?, ?)')
+            ->execute(array($sku, $name, $price));
 
         if (!$isQuerySuccessful) {
             die('Product failed to be created!');
         }
 
-        $this->databaseId = $pdo->lastInsertId();
+        $this->databaseId = self::withPdo()->lastInsertId();
         $this->sku = $sku;
         $this->name = $name;
         $this->price = $price;
+    }
+
+    /**
+     * Return self::$pdo or throw error if it is not set.
+     */
+    private static function withPdo(): \PDO
+    {
+        return self::$pdo ?? die('self::$pdo is not set!');
+    }
+
+    public static function setPdo(\PDO $pdo)
+    {
+        self::$pdo = $pdo;
     }
 
     /**
@@ -52,12 +69,12 @@ abstract class Product
      * reports query problems if the creation was not successful. Note:
      * databaseId is already provided for the query.
      *
-     * @param $pdo The PDO object on which a query is called.
      * @param $args Values that are passed to the query.
      */
-    protected function tryCreatingExtraAttributes(\PDO $pdo, array $args)
+    protected function tryCreatingExtraAttributes(array $args)
     {
-        $statement = $pdo->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
+        $statement = self::withPdo()
+                   ->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
         $executeArgs = array_merge(array($this->getDatabaseId()), $args);
 
         // TODO Hide this information in production
@@ -69,7 +86,7 @@ abstract class Product
             var_dump($statement->errorInfo());
             die('X failed to be created!');
         } else {
-            $this->extraAttributeId = $pdo->lastInsertId();
+            $this->extraAttributeId = self::withPdo()->lastInsertId();
         }
     }
 

@@ -17,15 +17,14 @@ class ProductBook extends Product
     private $weight;
 
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price,
         float $weight
     ) {
-        parent::__construct($pdo, $sku, $name, $price);
+        parent::__construct($sku, $name, $price);
 
-        $this->tryCreatingExtraAttributes($pdo, array($weight));
+        $this->tryCreatingExtraAttributes(array($weight));
         $this->weight = $weight;
     }
 

@@ -2,11 +2,25 @@
 
 namespace TechTask\Product;
 
+use TechTask\Util\Util;
+
 /**
  * Product database model which handles updates in database.
  */
 abstract class Product
 {
+    /**
+     * The table name of *this* class.
+     * @see static::EXTRA_ATTRIBUTE_TABLE_NAME
+     */
+    protected const BASE_TABLE_NAME = 'products';
+
+    /**
+     * The column count for *this* class.
+     * @see static::EXTRA_ATTRIBUTE_COLUMN_COUNT
+     */
+    protected const BASE_COLUMN_COUNT = 4;
+
     /**
      * The name of the table in which extra attributes are stored.
      */
@@ -16,6 +30,8 @@ abstract class Product
      * The number of columns in extra attributes table, including the id.
      */
     protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = null;
+
+    protected static array $extraColumns = [];
 
     /**
      * \PDO instance that is used to communicate to database.
@@ -81,17 +97,9 @@ abstract class Product
             die('EXTRA_ATTRIBUTE_COLUMN_COUNT is not defined!');
         }
 
-        // Raw interpolation is safe because we are not using user-defined data
-        return sprintf(
-            "INSERT INTO %s VALUES(%s)",
+        return Util::formatInsertQuery(
             static::EXTRA_ATTRIBUTE_TABLE_NAME,
-            implode(
-                ", ",
-                array_merge(
-                    array('null'),
-                    array_fill(1, static::EXTRA_ATTRIBUTE_COLUMN_COUNT - 1, "?"),
-                ),
-            ),
+            static::EXTRA_ATTRIBUTE_COLUMN_COUNT,
         );
     }
 
@@ -139,8 +147,12 @@ abstract class Product
 
     public function save(): void
     {
-        $statement = self::withPdo()
-                   ->prepare('INSERT INTO products VALUES(null, ?, ?, ?)');
+        $statement = self::withPdo()->prepare(
+            Util::formatInsertQuery(
+                static::BASE_TABLE_NAME,
+                static::BASE_COLUMN_COUNT,
+            )
+        );
 
         // TODO Hide this information in production
         if (!$statement->execute(array($this->sku, $this->name, $this->price))) {

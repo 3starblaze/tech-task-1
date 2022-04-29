@@ -2,6 +2,8 @@
 
 namespace TechTask\Router;
 
+use TechTask\Util\Util;
+
 class Router
 {
     private $routeHandlers = array();
@@ -30,7 +32,7 @@ class Router
         if (array_key_exists($uri, $this->routeHandlers)) {
             $this->routeHandlers[$uri]();
         } else {
-            die("Route does not exist!");
+            Util::throwError("Route does not exist!");
         }
     }
 }

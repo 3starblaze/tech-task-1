@@ -75,7 +75,7 @@ abstract class Product
      */
     private static function withPdo(): \PDO
     {
-        return self::$pdo ?? die('self::$pdo is not set!');
+        return self::$pdo ?? Util::throwError('self::$pdo is not set!');
     }
 
     public static function setPdo(\PDO $pdo)
@@ -90,11 +90,11 @@ abstract class Product
     protected function extraAttributesQuery(): string
     {
         if (!static::EXTRA_ATTRIBUTE_TABLE_NAME) {
-            die('EXTRA_ATTRIBUTE_TABLE_NAME is not defined!');
+            Util::throwError('EXTRA_ATTRIBUTE_TABLE_NAME is not defined!');
         }
 
         if (!static::EXTRA_ATTRIBUTE_COLUMN_COUNT) {
-            die('EXTRA_ATTRIBUTE_COLUMN_COUNT is not defined!');
+            Util::throwError('EXTRA_ATTRIBUTE_COLUMN_COUNT is not defined!');
         }
 
         return Util::formatInsertQuery(
@@ -118,16 +118,9 @@ abstract class Product
             $this->getExtraAttributeArgs(),
         );
 
-        // TODO Hide this information in production
         if (!$statement->execute($executeArgs)) {
             // TODO Destroy Product entry here
-            echo('$statement');
-            var_dump($statement);
-            echo('executeArgs: ');
-            var_dump($executeArgs);
-            echo('error info: ');
-            var_dump($statement->errorInfo());
-            die('X failed to be created!');
+            Util::throwError('Extra attribute row creation failed!');
         } else {
             $this->extraAttributeId = self::withPdo()->lastInsertId();
         }
@@ -154,12 +147,8 @@ abstract class Product
             )
         );
 
-        // TODO Hide this information in production
         if (!$statement->execute(array($this->sku, $this->name, $this->price))) {
-            print('Product failed to be created!');
-            echo('error info: ');
-            var_dump($statement->errorInfo());
-            die;
+            Util::throwError('Product failed to be created!');
         } else {
             $this->databaseId = self::withPdo()->lastInsertId();
         }
@@ -185,6 +174,6 @@ abstract class Product
     public function getDatabaseId(): int
     {
         return $this->databaseId
-            ?? die('Model has no ID because it is not saved!');
+            ?? Util::throwError('Model has no ID because it is not saved!');
     }
 }

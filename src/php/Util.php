@@ -25,4 +25,18 @@ class Util
             )),
         );
     }
+
+    /**
+     * Make and throw and Exception.
+     *
+     * @see \Exception
+     */
+    public static function throwError(
+        string $message = "",
+        int $code = 0,
+        ?Throwable $previous = null
+    ) {
+        // TODO Hide exception info in production
+        throw new \Exception($message, $code, $previous);
+    }
 }

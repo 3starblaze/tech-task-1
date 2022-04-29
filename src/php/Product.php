@@ -7,7 +7,15 @@ namespace TechTask\Product;
  */
 abstract class Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY = '';
+    /**
+     * The name of the table in which extra attributes are stored.
+     */
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = null;
+
+    /**
+     * The number of columns in extra attributes table, including the id.
+     */
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = null;
 
     /**
      * \PDO instance that is used to communicate to database.
@@ -60,6 +68,34 @@ abstract class Product
     }
 
     /**
+     * Return a query that is used to insert an entry into extra attributes
+     * table.
+     */
+    protected function extraAttributesQuery(): string
+    {
+        if (!static::EXTRA_ATTRIBUTE_TABLE_NAME) {
+            die('EXTRA_ATTRIBUTE_TABLE_NAME is not defined!');
+        }
+
+        if (!static::EXTRA_ATTRIBUTE_COLUMN_COUNT) {
+            die('EXTRA_ATTRIBUTE_COLUMN_COUNT is not defined!');
+        }
+
+        // Raw interpolation is safe because we are not using user-defined data
+        return sprintf(
+            "INSERT INTO %s VALUES(%s)",
+            static::EXTRA_ATTRIBUTE_TABLE_NAME,
+            implode(
+                ", ",
+                array_merge(
+                    array('null'),
+                    array_fill(1, static::EXTRA_ATTRIBUTE_COLUMN_COUNT - 1, "?"),
+                ),
+            ),
+        );
+    }
+
+    /**
      * Helper method that tries to create table with extra attributes and
      * reports query problems if the creation was not successful. Note:
      * databaseId is already provided for the query.
@@ -68,8 +104,7 @@ abstract class Product
      */
     protected function tryCreatingExtraAttributes(): void
     {
-        $statement = self::withPdo()
-                   ->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
+        $statement = self::withPdo()->prepare($this->extraAttributesQuery());
         $executeArgs = array_merge(
             array($this->getDatabaseId()),
             $this->getExtraAttributeArgs(),
@@ -78,6 +113,8 @@ abstract class Product
         // TODO Hide this information in production
         if (!$statement->execute($executeArgs)) {
             // TODO Destroy Product entry here
+            echo('$statement');
+            var_dump($statement);
             echo('executeArgs: ');
             var_dump($executeArgs);
             echo('error info: ');

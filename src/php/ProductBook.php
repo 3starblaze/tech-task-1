@@ -6,8 +6,9 @@ use TechTask\Product\Product;
 
 class ProductBook extends Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
-        = 'INSERT INTO discs VALUES(null, ?, ?)';
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = 'books';
+
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = 3;
 
     private $bookDataId;
 

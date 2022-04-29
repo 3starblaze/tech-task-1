@@ -6,8 +6,9 @@ use TechTask\Product\Product;
 
 class ProductFurniture extends Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
-        = 'INSERT INTO furniture VALUES(null, ?, ?, ?, ?)';
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = 'furniture';
+
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = 5;
 
     /**
      * Furniture height in cm.

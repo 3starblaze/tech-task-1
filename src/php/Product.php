@@ -2,18 +2,52 @@
 
 namespace TechTask\Product;
 
+use TechTask\Util\Util;
+
 /**
  * Product database model which handles updates in database.
  */
 abstract class Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY = '';
+    /**
+     * The table name of *this* class.
+     * @see static::EXTRA_ATTRIBUTE_TABLE_NAME
+     */
+    protected const BASE_TABLE_NAME = 'products';
+
+    /**
+     * The column count for *this* class.
+     * @see static::EXTRA_ATTRIBUTE_COLUMN_COUNT
+     */
+    protected const BASE_COLUMN_COUNT = 4;
+
+    /**
+     * The name of the table in which extra attributes are stored.
+     */
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = null;
+
+    /**
+     * The number of columns in extra attributes table, including the id.
+     */
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = null;
+
+    protected static array $extraColumns = [];
+
+    /**
+     * \PDO instance that is used to communicate to database.
+     */
+    private static ?\PDO $pdo = null;
 
     private $sku;
 
     private $name;
 
     private $price;
+
+    /**
+     * The id of this class' table or null if the model is not in database.
+     */
+    private ?int $databaseId = null;
 
     /**
      * The product's id in EXTRA_ATTRIBUTE_TABLE_NAME table.
@@ -23,28 +57,50 @@ abstract class Product
     /**
      * Product constructor.
      *
-     * @param $pdo PDO instance which is used to save the product model.
      * @param $sku Stock keeping unit.
      * @param $price The value of product in cents.
      */
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price
     ) {
-        $isQuerySuccessful
-            = $pdo->prepare('INSERT INTO products VALUES(null, ?, ?, ?)')
-                  ->execute(array($sku, $name, $price));
-
-        if (!$isQuerySuccessful) {
-            die('Product failed to be created!');
-        }
-
-        $this->databaseId = $pdo->lastInsertId();
         $this->sku = $sku;
         $this->name = $name;
         $this->price = $price;
+    }
+
+    /**
+     * Return self::$pdo or throw error if it is not set.
+     */
+    private static function withPdo(): \PDO
+    {
+        return self::$pdo ?? Util::throwError('self::$pdo is not set!');
+    }
+
+    public static function setPdo(\PDO $pdo)
+    {
+        self::$pdo = $pdo;
+    }
+
+    /**
+     * Return a query that is used to insert an entry into extra attributes
+     * table.
+     */
+    protected function extraAttributesQuery(): string
+    {
+        if (!static::EXTRA_ATTRIBUTE_TABLE_NAME) {
+            Util::throwError('EXTRA_ATTRIBUTE_TABLE_NAME is not defined!');
+        }
+
+        if (!static::EXTRA_ATTRIBUTE_COLUMN_COUNT) {
+            Util::throwError('EXTRA_ATTRIBUTE_COLUMN_COUNT is not defined!');
+        }
+
+        return Util::formatInsertQuery(
+            static::EXTRA_ATTRIBUTE_TABLE_NAME,
+            static::EXTRA_ATTRIBUTE_COLUMN_COUNT,
+        );
     }
 
     /**
@@ -52,31 +108,53 @@ abstract class Product
      * reports query problems if the creation was not successful. Note:
      * databaseId is already provided for the query.
      *
-     * @param $pdo The PDO object on which a query is called.
      * @param $args Values that are passed to the query.
      */
-    protected function tryCreatingExtraAttributes(\PDO $pdo, array $args)
+    protected function tryCreatingExtraAttributes(): void
     {
-        $statement = $pdo->prepare(static::EXTRA_ATTRIBUTE_INSERT_QUERY);
-        $executeArgs = array_merge(array($this->getDatabaseId()), $args);
+        $statement = self::withPdo()->prepare($this->extraAttributesQuery());
+        $executeArgs = array_merge(
+            array($this->getDatabaseId()),
+            $this->getExtraAttributeArgs(),
+        );
 
-        // TODO Hide this information in production
         if (!$statement->execute($executeArgs)) {
             // TODO Destroy Product entry here
-            echo('executeArgs: ');
-            var_dump($executeArgs);
-            echo('error info: ');
-            var_dump($statement->errorInfo());
-            die('X failed to be created!');
+            Util::throwError('Extra attribute row creation failed!');
         } else {
-            $this->extraAttributeId = $pdo->lastInsertId();
+            $this->extraAttributeId = self::withPdo()->lastInsertId();
         }
     }
+
+    /**
+     * Return array of arguments that is used to create extra attribute table.
+     * This array should not contain databaseId since it will be provided
+     * automatically.
+     */
+    abstract protected function getExtraAttributeArgs(): array;
 
     /**
      * Convert the class to JSON for sending it via API.
      */
     abstract public function toJson();
+
+    public function save(): void
+    {
+        $statement = self::withPdo()->prepare(
+            Util::formatInsertQuery(
+                static::BASE_TABLE_NAME,
+                static::BASE_COLUMN_COUNT,
+            )
+        );
+
+        if (!$statement->execute(array($this->sku, $this->name, $this->price))) {
+            Util::throwError('Product failed to be created!');
+        } else {
+            $this->databaseId = self::withPdo()->lastInsertId();
+        }
+
+        $this->tryCreatingExtraAttributes();
+    }
 
     public function getSku()
     {
@@ -93,8 +171,9 @@ abstract class Product
         return $this->price;
     }
 
-    public function getDatabaseId()
+    public function getDatabaseId(): int
     {
-        return $this->databaseId;
+        return $this->databaseId
+            ?? Util::throwError('Model has no ID because it is not saved!');
     }
 }

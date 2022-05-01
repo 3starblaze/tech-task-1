@@ -6,8 +6,9 @@ use TechTask\Product\Product;
 
 class ProductFurniture extends Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
-        = 'INSERT INTO furniture VALUES(null, ?, ?, ?, ?)';
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = 'furniture';
+
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = 5;
 
     /**
      * Furniture height in cm.
@@ -25,7 +26,6 @@ class ProductFurniture extends Product
     private $length;
 
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price,
@@ -33,16 +33,15 @@ class ProductFurniture extends Product
         int $width,
         int $length
     ) {
-        parent::__construct($pdo, $sku, $name, $price);
-
-        $this->tryCreatingExtraAttributes(
-            $pdo,
-            array($height, $width, $length),
-        );
-
+        parent::__construct($sku, $name, $price);
         $this->height = $height;
         $this->width = $width;
         $this->length = $length;
+    }
+
+    protected function getExtraAttributeArgs(): array
+    {
+        return array($this->height, $this->width, $this->length);
     }
 
     public function toJson()

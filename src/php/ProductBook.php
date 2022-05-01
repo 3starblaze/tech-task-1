@@ -6,8 +6,9 @@ use TechTask\Product\Product;
 
 class ProductBook extends Product
 {
-    protected const EXTRA_ATTRIBUTE_INSERT_QUERY
-        = 'INSERT INTO discs VALUES(null, ?, ?)';
+    protected const EXTRA_ATTRIBUTE_TABLE_NAME = 'books';
+
+    protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = 3;
 
     private $bookDataId;
 
@@ -17,16 +18,18 @@ class ProductBook extends Product
     private $weight;
 
     public function __construct(
-        \PDO $pdo,
         string $sku,
         string $name,
         int $price,
         float $weight
     ) {
-        parent::__construct($pdo, $sku, $name, $price);
-
-        $this->tryCreatingExtraAttributes($pdo, array($weight));
+        parent::__construct($sku, $name, $price);
         $this->weight = $weight;
+    }
+
+    protected function getExtraAttributeArgs(): array
+    {
+        return array($this->weight);
     }
 
     public function toJson()

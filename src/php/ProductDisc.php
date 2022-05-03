@@ -3,6 +3,7 @@
 namespace TechTask\ProductDisc;
 
 use TechTask\Product\Product;
+use TechTask\Column\Column;
 
 class ProductDisc extends Product
 {
@@ -28,6 +29,13 @@ class ProductDisc extends Product
     protected function getExtraAttributeArgs(): array
     {
         return array($this->discSize);
+    }
+
+    protected static function getExtraColumns(): array
+    {
+        return [
+            new Column('disc_size', 'int'),
+        ];
     }
 
     public function toJson()

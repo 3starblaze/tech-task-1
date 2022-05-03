@@ -3,6 +3,7 @@
 namespace TechTask\Product;
 
 use TechTask\Util\Util;
+use TechTask\Column\Column;
 
 /**
  * Product database model which handles updates in database.
@@ -30,8 +31,6 @@ abstract class Product
      * The number of columns in extra attributes table, including the id.
      */
     protected const EXTRA_ATTRIBUTE_COLUMN_COUNT = null;
-
-    protected static array $extraColumns = [];
 
     /**
      * \PDO instance that is used to communicate to database.
@@ -73,14 +72,101 @@ abstract class Product
     /**
      * Return self::$pdo or throw error if it is not set.
      */
-    private static function withPdo(): \PDO
+    protected static function withPdo(): \PDO
     {
         return self::$pdo ?? Util::throwError('self::$pdo is not set!');
     }
 
+    protected static function getBaseColumns(): array
+    {
+        return [
+            new Column('sku', 'string'),
+            new Column('name', 'string'),
+            new Column('price', 'int'),
+        ];
+    }
+
+    /**
+     * Returns an array of columns that corresponds to this class's extra
+     * attribute table's columns.
+     *
+     * Note: This function's return array should not contain id or product_id
+     * column.
+     *
+     * @return Column[]
+     */
+    abstract protected static function getExtraColumns(): array;
+
     public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;
+    }
+
+    /**
+     * Get a Product whose databaseId is $id.
+     *
+     * Throws error if there is no row with specified $id.
+     *
+     * @param $id The database id of the requested product.
+     */
+    public static function fromId(int $id): Product
+    {
+        $baseTable = static::BASE_TABLE_NAME;
+        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
+        $baseColumns = static::getBaseColumns();
+        $extraColumns = static::getExtraColumns();
+
+        $selectArgs = implode(', ', array_merge(
+            array_map(function (Column $val) {
+                return 'base.' . $val->getName();
+            }, $baseColumns),
+            array_map(function (Column $val) {
+                return 'extra.' . $val->getName();
+            }, $extraColumns),
+        ));
+
+        // Interpolation is safe because no user-provided data is used.
+        $queryString = "SELECT $selectArgs FROM $extraTable extra"
+                     . " LEFT JOIN $baseTable base"
+                     . " ON extra.product_id=base.id"
+                     . " WHERE base.id = ?";
+
+        $statement = self::withPDO()->prepare($queryString);
+        $statement->execute([$id]);
+
+        if ($statement->rowCount() == 1) {
+            $row = $statement->fetch();
+
+            $product = new static(...array_map(
+                function (Column $col) use ($row) {
+                    return $col->convertValue($row[$col->getName()]);
+                },
+                array_merge($baseColumns, $extraColumns),
+            ));
+            $product->setDatabaseId($id);
+            return $product;
+        } else {
+            Util::throwError('Product was not found!');
+        }
+    }
+
+    /**
+     * Get all objects of this class which are defined in the table.
+     *
+     * @return Product[]
+     */
+    public static function all(): array
+    {
+        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
+
+        return array_map(
+            function (array $res) {
+                return static::fromId($res[0]);
+            },
+            static::withPDO()
+            ->query("SELECT product_id FROM $extraTable")
+            ->fetchAll(),
+        );
     }
 
     /**
@@ -123,6 +209,18 @@ abstract class Product
             Util::throwError('Extra attribute row creation failed!');
         } else {
             $this->extraAttributeId = self::withPdo()->lastInsertId();
+        }
+    }
+
+    /**
+     * Initialize databaseId for a model with no databaseId.
+     */
+    protected function setDatabaseId(int $id): void
+    {
+        if ($this->databaseId == null) {
+            $this->databaseId = $id;
+        } else {
+            Util::throwError('Id has already been set!');
         }
     }
 

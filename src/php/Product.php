@@ -86,6 +86,15 @@ abstract class Product
         ];
     }
 
+    /**
+     * Returns an array of columns that corresponds to this class's extra
+     * attribute table's columns.
+     *
+     * Note: This function's return array should not contain id or product_id
+     * column.
+     *
+     * @return Column[]
+     */
     abstract protected static function getExtraColumns(): array;
 
     public static function setPdo(\PDO $pdo)
@@ -93,6 +102,13 @@ abstract class Product
         self::$pdo = $pdo;
     }
 
+    /**
+     * Get a Product whose databaseId is $id.
+     *
+     * Throws error if there is no row with specified $id.
+     *
+     * @param $id The database id of the requested product.
+     */
     public static function fromId(int $id): Product
     {
         $baseTable = static::BASE_TABLE_NAME;
@@ -134,6 +150,11 @@ abstract class Product
         }
     }
 
+    /**
+     * Get all objects of this class which are defined in the table.
+     *
+     * @return Product[]
+     */
     public static function all(): array
     {
         $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;

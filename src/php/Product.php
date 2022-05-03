@@ -73,7 +73,7 @@ abstract class Product
     /**
      * Return self::$pdo or throw error if it is not set.
      */
-    private static function withPdo(): \PDO
+    protected static function withPdo(): \PDO
     {
         return self::$pdo ?? Util::throwError('self::$pdo is not set!');
     }
@@ -123,6 +123,18 @@ abstract class Product
             Util::throwError('Extra attribute row creation failed!');
         } else {
             $this->extraAttributeId = self::withPdo()->lastInsertId();
+        }
+    }
+
+    /**
+     * Initialize databaseId for a model with no databaseId.
+     */
+    protected function setDatabaseId(int $id): void
+    {
+        if ($this->databaseId == null) {
+            $this->databaseId = $id;
+        } else {
+            Util::throwError('Id has already been set!');
         }
     }
 

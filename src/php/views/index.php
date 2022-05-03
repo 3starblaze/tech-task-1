@@ -49,7 +49,7 @@ foreach($products as $product) {
     </head>
     <body>
         <h1>This is Root route.</h1>
-        <?php foreach($products as $product): ?>
+        <?php foreach(ProductDisc::all() as $product): ?>
             <p><?= $product->toJson() ?></p>
         <?php endforeach; ?>
 

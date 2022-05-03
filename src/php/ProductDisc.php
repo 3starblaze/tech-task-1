@@ -3,6 +3,7 @@
 namespace TechTask\ProductDisc;
 
 use TechTask\Product\Product;
+use TechTask\Column\Column;
 
 class ProductDisc extends Product
 {
@@ -25,64 +26,16 @@ class ProductDisc extends Product
         $this->discSize = $discSize;
     }
 
-    public static function fromId(int $id): ProductDisc
-    {
-        $baseTable = static::BASE_TABLE_NAME;
-        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
-
-        $baseColumns = ['name', 'sku', 'price'];
-        $extraColumns = ['disc_size'];
-
-        $selectArgs = implode(', ', array_merge(
-            array_map(function (string $val) {
-                return 'base.' . $val;
-            }, $baseColumns),
-            array_map(function (string $val) {
-                return 'extra.' . $val;
-            }, $extraColumns),
-        ));
-
-        // Interpolation is safe because no user-provided data is used.
-        $queryString = "SELECT $selectArgs FROM $extraTable extra"
-                     . " LEFT JOIN $baseTable base"
-                     . " ON extra.product_id=base.id"
-                     . " WHERE base.id = ?";
-
-        $statement = self::withPDO()->prepare($queryString);
-        $statement->execute([$id]);
-
-        if ($statement->rowCount() == 1) {
-            $row = $statement->fetch();
-            $product = new ProductDisc(
-                $row['sku'],
-                $row['name'],
-                intval($row['price']),
-                intval($row['disc_size']),
-            );
-            $product->setDatabaseId($id);
-            return $product;
-        } else {
-            die('ROW COUNT IS NOT 1!');
-        }
-    }
-
-    public static function all(): array
-    {
-        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
-
-        return array_map(
-            function (array $res) {
-                return static::fromId($res[0]);
-            },
-            static::withPDO()
-            ->query("SELECT product_id FROM $extraTable")
-            ->fetchAll(),
-        );
-    }
-
     protected function getExtraAttributeArgs(): array
     {
         return array($this->discSize);
+    }
+
+    protected static function getExtraColumns(): array
+    {
+        return [
+            new Column('disc_size', 'int'),
+        ];
     }
 
     public function toJson()

@@ -3,6 +3,7 @@
 namespace TechTask\ProductBook;
 
 use TechTask\Product\Product;
+use TechTask\Column\Column;
 
 class ProductBook extends Product
 {
@@ -25,6 +26,13 @@ class ProductBook extends Product
     ) {
         parent::__construct($sku, $name, $price);
         $this->weight = $weight;
+    }
+
+    protected static function getExtraColumns(): array
+    {
+        return [
+            new Column('weight', 'float'),
+        ];
     }
 
     protected function getExtraAttributeArgs(): array

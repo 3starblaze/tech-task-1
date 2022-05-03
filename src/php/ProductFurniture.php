@@ -3,6 +3,7 @@
 namespace TechTask\ProductFurniture;
 
 use TechTask\Product\Product;
+use TechTask\Column\Column;
 
 class ProductFurniture extends Product
 {
@@ -37,6 +38,15 @@ class ProductFurniture extends Product
         $this->height = $height;
         $this->width = $width;
         $this->length = $length;
+    }
+
+    protected static function getExtraColumns(): array
+    {
+        return [
+            new Column('height', 'int'),
+            new Column('width', 'int'),
+            new Column('length', 'int'),
+        ];
     }
 
     protected function getExtraAttributeArgs(): array

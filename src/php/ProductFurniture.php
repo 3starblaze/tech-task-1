@@ -67,6 +67,10 @@ class ProductFurniture extends Product
         ));
     }
 
+    public function indexCard(): string {
+        return '<b>TODO</b';
+    }
+
     public function getHeight()
     {
         return $this->height;

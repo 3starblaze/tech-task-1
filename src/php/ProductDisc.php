@@ -49,6 +49,18 @@ class ProductDisc extends Product
         ));
     }
 
+    public function indexCard(): string
+    {
+        $sku = $this->getSku();
+        $name = $this->getName();
+        $price = $this->getPrice();
+        $discSize = $this->getDiscSize();
+
+        ob_start();
+        include('views/disc/IndexCard.php');
+        return ob_get_clean();
+    }
+
     public function getDiscSize()
     {
         return $this->discSize;

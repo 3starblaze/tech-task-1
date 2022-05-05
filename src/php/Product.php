@@ -236,6 +236,11 @@ abstract class Product
      */
     abstract public function toJson();
 
+    /**
+     * Return HTML template for a card that is rendered in the index.
+     */
+    abstract public function indexCard(): string;
+
     public function save(): void
     {
         $statement = self::withPdo()->prepare(

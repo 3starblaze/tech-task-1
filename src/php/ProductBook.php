@@ -51,6 +51,10 @@ class ProductBook extends Product
         ));
     }
 
+    public function indexCard(): string {
+        return '<b>TODO</b';
+    }
+
     public function getWeight()
     {
         return $this->weight;

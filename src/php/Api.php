@@ -14,7 +14,8 @@ class Api
      */
     public static function index(): string
     {
-        return json_encode(array_map(
+
+        $result = array_map(
             function (Product $p) {
                 return [
                     'id' => $p->getDatabaseId(),
@@ -28,6 +29,12 @@ class Api
                 ProductBook::all(),
                 ProductFurniture::all(),
             )
-        ));
+        );
+
+        usort($result, function (array $a, array $b) {
+            return $a->id <=> $b->id;
+        });
+
+        return json_encode($result);
     }
 }

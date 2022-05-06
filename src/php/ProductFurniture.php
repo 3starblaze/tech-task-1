@@ -67,8 +67,18 @@ class ProductFurniture extends Product
         ));
     }
 
-    public function indexCard(): string {
-        return '<b>TODO</b';
+    public function indexCard(): string
+    {
+        $sku = $this->getSku();
+        $name = $this->getName();
+        $price = $this->getPrice();
+        $height = $this->getHeight();
+        $width = $this->getWidth();
+        $length = $this->getLength();
+
+        ob_start();
+        include('views/furniture/IndexCard.php');
+        return ob_get_clean();
     }
 
     public function getHeight()

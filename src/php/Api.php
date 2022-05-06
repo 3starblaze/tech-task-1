@@ -2,7 +2,10 @@
 
 namespace TechTask\Api;
 
+use TechTask\Product\Product;
+use TechTask\ProductBook\ProductBook;
 use TechTask\ProductDisc\ProductDisc;
+use TechTask\ProductFurniture\ProductFurniture;
 
 class Api
 {
@@ -11,13 +14,20 @@ class Api
      */
     public static function index(): string
     {
-        return json_encode(
-            array_map(function (ProductDisc $p) {
+        return json_encode(array_map(
+            function (Product $p) {
                 return [
-                    'databaseId' => $p->getDatabaseId(),
+                    'id' => $p->getDatabaseId(),
                     'cardTemplate' => $p->indexCard(),
                 ];
-            }, ProductDisc::all())
-        );
+            },
+            // TODO store product classes somewhere else to avoid hard-coded
+            // classes
+            array_merge(
+                ProductDisc::all(),
+                ProductBook::all(),
+                ProductFurniture::all(),
+            )
+        ));
     }
 }

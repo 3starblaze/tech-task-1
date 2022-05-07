@@ -1,38 +1,29 @@
 import React from "react";
 import Card from "./Card.js";
 import "./index.scss";
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { init } from './mainSlice';
 
 const baseUrl = 'http://localhost:8080';
 
-export default class Root extends React.Component {
-  constructor() {
-    super();
-    // Index cards is expected to be an array of objects with these keys:
-    // int `databaseId`
-    // array[string] `indexCardData`
-    this.state = {
-      indexCards: [],
-    };
-  }
+export default function Root() {
+  const dispatch = useDispatch();
+  const cards = useSelector(state => state.main.cards);
 
-  componentDidMount() {
+  useEffect(() => {
     fetch(baseUrl + '/api/index')
       .then(res => res.json())
-      .then(json => this.setState({ indexCards: json }));
-  }
+      .then(json => dispatch(init(json)));
+  }, []);
 
-  render() {
-    console.log(this.state.indexCardData);
-    return (
-      <div className="card-container">
-      {this.state.indexCards.map(obj =>
-        (
-          <Card databaseId={obj.databaseId}>
-            { obj.indexCardData.map(line => <p>{ line }</p>) }
-          </Card>
-        )
+  return (
+    <div className="card-container">
+      {cards.map(obj =>
+        <Card key={obj.id}>
+          { obj.indexCardData.map((line, i) => <p key={i}>{ line }</p>) }
+        </Card>
       )}
-      </div>
-    );
-  }
+    </div>
+  );
 }

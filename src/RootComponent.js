@@ -10,6 +10,9 @@ const baseUrl = 'http://localhost:8080';
 export default function Root() {
   const dispatch = useDispatch();
   const cards = useSelector(state => state.main.cards);
+  const checkedCards = useSelector(
+    state => Object.keys(cards).filter(id => cards[id].checked)
+  );
 
   useEffect(() => {
     fetch(baseUrl + '/api/index')
@@ -18,12 +21,22 @@ export default function Root() {
   }, []);
 
   return (
-    <div className="card-container">
-      {cards.map(obj =>
-        <Card key={obj.id}>
-          { obj.indexCardData.map((line, i) => <p key={i}>{ line }</p>) }
-        </Card>
-      )}
-    </div>
+    <>
+      <button
+        onClick={ () => {
+          const format = (checkedCards.length > 0) ? checkedCards : 'nothing';
+          alert(`About to delete ${format}`);
+        } }>
+      Mass delete</button>
+      <div className="card-container">
+        {Object.keys(cards).map(id =>
+          <Card key={id}
+                databaseId={id}>
+            { cards[id].indexCardData
+              .map((line, i) => <p key={i}>{ line }</p>) }
+          </Card>
+        )}
+      </div>
+    </>
   );
 }

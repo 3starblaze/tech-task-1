@@ -15,25 +15,19 @@ class Api
     public static function index(): string
     {
 
-        $result = array_map(
-            function (Product $p) {
-                return [
-                    'id' => $p->getDatabaseId(),
-                    'indexCardData' => $p->indexCardData(),
-                ];
-            },
-            // TODO store product classes somewhere else to avoid hard-coded
-            // classes
-            array_merge(
-                ProductDisc::all(),
-                ProductBook::all(),
-                ProductFurniture::all(),
-            )
+        $result = [];
+        // TODO store product classes somewhere else to avoid hard-coded classes
+        $products = array_merge(
+            ProductDisc::all(),
+            ProductBook::all(),
+            ProductFurniture::all(),
         );
 
-        usort($result, function (array $a, array $b) {
-            return $a->id <=> $b->id;
-        });
+        foreach ($products as $p) {
+            $result[$p->getDatabaseId()] = [
+                'indexCardData' => $p->indexCardData(),
+            ];
+        }
 
         return json_encode($result);
     }

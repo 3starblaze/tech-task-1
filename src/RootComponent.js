@@ -7,25 +7,28 @@ const baseUrl = 'http://localhost:8080';
 export default class Root extends React.Component {
   constructor() {
     super();
+    // Index cards is expected to be an array of objects with these keys:
+    // int `databaseId`
+    // array[string] `indexCardData`
     this.state = {
-      indexCardData: [],
+      indexCards: [],
     };
   }
 
   componentDidMount() {
     fetch(baseUrl + '/api/index')
       .then(res => res.json())
-      .then(json => this.setState({ indexCardData: json }));
+      .then(json => this.setState({ indexCards: json }));
   }
 
   render() {
     console.log(this.state.indexCardData);
     return (
-      <div class="card-container">
-      {this.state.indexCardData.map(obj =>
+      <div className="card-container">
+      {this.state.indexCards.map(obj =>
         (
           <Card databaseId={obj.databaseId}>
-            <div dangerouslySetInnerHTML={{ __html: obj.cardTemplate}} />
+            { obj.indexCardData.map(line => <p>{ line }</p>) }
           </Card>
         )
       )}

@@ -51,16 +51,14 @@ class ProductBook extends Product
         ));
     }
 
-    public function indexCard(): string
+    public function indexCardData(): array
     {
-        $sku = $this->getSku();
-        $name = $this->getName();
-        $price = $this->getPrice();
-        $weight = $this->getWeight();
-
-        ob_start();
-        include('views/book/IndexCard.php');
-        return ob_get_clean();
+        return [
+            $this->getSku(),
+            $this->getName(),
+            $this->getPrice(),
+            "Weight: {$this->getWeight()} KG",
+        ];
     }
 
     public function getWeight()

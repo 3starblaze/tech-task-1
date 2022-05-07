@@ -237,9 +237,9 @@ abstract class Product
     abstract public function toJson();
 
     /**
-     * Return HTML template for a card that is rendered in the index.
+     * Return a list of data that should be shown in the index card.
      */
-    abstract public function indexCard(): string;
+    abstract public function indexCardData(): array;
 
     public function save(): void
     {

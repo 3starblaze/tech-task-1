@@ -19,7 +19,7 @@ class Api
             function (Product $p) {
                 return [
                     'id' => $p->getDatabaseId(),
-                    'cardTemplate' => $p->indexCard(),
+                    'indexCardData' => $p->indexCardData(),
                 ];
             },
             // TODO store product classes somewhere else to avoid hard-coded

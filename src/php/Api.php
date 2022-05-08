@@ -3,9 +3,6 @@
 namespace TechTask\Api;
 
 use TechTask\Product\Product;
-use TechTask\ProductBook\ProductBook;
-use TechTask\ProductDisc\ProductDisc;
-use TechTask\ProductFurniture\ProductFurniture;
 
 class Api
 {
@@ -14,14 +11,8 @@ class Api
      */
     public static function index(): string
     {
-
         $result = [];
-        // TODO store product classes somewhere else to avoid hard-coded classes
-        $products = array_merge(
-            ProductDisc::all(),
-            ProductBook::all(),
-            ProductFurniture::all(),
-        );
+        $products = Product::globalAll();
 
         foreach ($products as $p) {
             $result[$p->getDatabaseId()] = [
@@ -30,5 +21,17 @@ class Api
         }
 
         return json_encode($result);
+    }
+
+    public static function massDelete(): string
+    {
+
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json);
+
+        return json_encode([
+            'status' => 'ok',
+            'data' => $obj,
+        ]);
     }
 }

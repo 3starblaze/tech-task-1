@@ -37,6 +37,11 @@ abstract class Product
      */
     private static ?\PDO $pdo = null;
 
+    /**
+     * String array of namespaced class names that are children of Product.
+     */
+    private static array $childrenClasses = [];
+
     private $sku;
 
     private $name;
@@ -170,6 +175,16 @@ abstract class Product
     }
 
     /**
+     * Like `all()` but for all children classes.
+     */
+    public static function globalAll(): array
+    {
+        return array_merge(...array_map(function (string $class) {
+            return $class::all();
+        }, static::$childrenClasses));
+    }
+
+    /**
      * Return a query that is used to insert an entry into extra attributes
      * table.
      */
@@ -278,5 +293,15 @@ abstract class Product
     {
         return $this->databaseId
             ?? Util::throwError('Model has no ID because it is not saved!');
+    }
+
+    /**
+     * Register a child class which is needed for internal purposes.
+     *
+     * @param $class Namespaced name of the class.
+     */
+    public function registerChildClass(string $class): void
+    {
+        static::$childrenClasses[] = $class;
     }
 }

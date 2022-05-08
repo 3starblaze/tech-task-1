@@ -7,6 +7,17 @@ import { init } from './mainSlice';
 
 const baseUrl = 'http://localhost:8080';
 
+function deleteIds(ids) {
+  return fetch(
+    baseUrl + '/api/mass_delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ids }),
+    });
+}
+
 export default function Root() {
   const dispatch = useDispatch();
   const cards = useSelector(state => state.main.cards);
@@ -24,10 +35,12 @@ export default function Root() {
     <>
       <button
         onClick={ () => {
-          const format = (checkedCards.length > 0) ? checkedCards : 'nothing';
-          alert(`About to delete ${format}`);
+          deleteIds(checkedCards)
+            .then(res => res.json())
+            .then(_ => location = location) // refresh page
         } }>
-      Mass delete</button>
+        Mass delete
+      </button>
       <div className="card-container">
         {Object.keys(cards).map(id =>
           <Card key={id}

@@ -14,6 +14,16 @@ $pdo = new PDO(
     $_ENV['DB_PASSWORD'],
 );
 
+$childrenClasses = [
+    'TechTask\ProductDisc\ProductDisc',
+    'TechTask\ProductBook\ProductBook',
+    'TechTask\ProductFurniture\ProductFurniture',
+];
+
+foreach ($childrenClasses as $class) {
+    Product::registerChildClass($class);
+}
+
 Product::setPdo($pdo);
 $router = new Router();
 
@@ -24,6 +34,11 @@ $router->registerRoute('/', function() {
 $router->registerRoute('/api/index', function() {
     header('Content-Type: application/json; charset=utf-8');
     echo Api::index();
+});
+
+$router->registerRoute('/api/mass_delete', function () {
+    header('Content-Type: application/json; charset=utf-8');
+    echo Api::massDelete();
 });
 
 $router->handleRequest();

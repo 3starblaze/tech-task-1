@@ -7,6 +7,10 @@ use TechTask\Column\Column;
 
 /**
  * Product database model which handles updates in database.
+ *
+ * When making children of this class, make sure to register them via
+ * `registerChildClass()`, so that you can use static methods that operate on
+ * all classes.
  */
 abstract class Product
 {
@@ -92,6 +96,14 @@ abstract class Product
     }
 
     /**
+     * Return whether the class is Product (and not just a child).
+     */
+    protected static function isBase(): bool
+    {
+        return get_class() == get_called_class();
+    }
+
+    /**
      * Returns an array of columns that corresponds to this class's extra
      * attribute table's columns.
      *
@@ -162,26 +174,22 @@ abstract class Product
      */
     public static function all(): array
     {
-        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
+        if (static::isBase()) {
+            return array_merge(...array_map(function (string $class) {
+                return $class::all();
+            }, static::$childrenClasses));
+        } else {
+            $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
 
-        return array_map(
-            function (array $res) {
-                return static::fromId($res[0]);
-            },
-            static::withPDO()
-            ->query("SELECT product_id FROM $extraTable")
-            ->fetchAll(),
-        );
-    }
-
-    /**
-     * Like `all()` but for all children classes.
-     */
-    public static function globalAll(): array
-    {
-        return array_merge(...array_map(function (string $class) {
-            return $class::all();
-        }, static::$childrenClasses));
+            return array_map(
+                function (array $res) {
+                    return static::fromId($res[0]);
+                },
+                static::withPDO()
+                ->query("SELECT product_id FROM $extraTable")
+                ->fetchAll(),
+            );
+        }
     }
 
     /**

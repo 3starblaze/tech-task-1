@@ -12,7 +12,7 @@ class Api
     public static function index(): string
     {
         $result = [];
-        $products = Product::globalAll();
+        $products = Product::all();
 
         foreach ($products as $p) {
             $result[$p->getDatabaseId()] = [

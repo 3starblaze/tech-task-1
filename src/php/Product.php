@@ -126,8 +126,18 @@ abstract class Product
      *
      * @param $id The database id of the requested product.
      */
-    public static function fromId(int $id): Product
+    public static function fromId(int $id): ?Product
     {
+        if (static::isBase()) {
+            foreach (static::$childrenClasses as $class) {
+                $productCandidate = static::fromId($id);
+                if ($productCandidate) {
+                    return $productCandidate;
+                }
+            }
+            return null;
+        }
+
         $baseTable = static::BASE_TABLE_NAME;
         $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
         $baseColumns = static::getBaseColumns();
@@ -163,7 +173,7 @@ abstract class Product
             $product->setDatabaseId($id);
             return $product;
         } else {
-            Util::throwError('Product was not found!');
+            return null;
         }
     }
 

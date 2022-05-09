@@ -29,9 +29,10 @@ class Api
         $json = file_get_contents('php://input');
         $obj = json_decode($json);
 
-        return json_encode([
-            'status' => 'ok',
-            'data' => $obj,
-        ]);
+        foreach ($obj->ids as $id) {
+            Product::fromId($id)->delete();
+        }
+
+        return json_encode($obj);
     }
 }

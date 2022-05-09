@@ -130,7 +130,7 @@ abstract class Product
     {
         if (static::isBase()) {
             foreach (static::$childrenClasses as $class) {
-                $productCandidate = static::fromId($id);
+                $productCandidate = $class::fromId($id);
                 if ($productCandidate) {
                     return $productCandidate;
                 }
@@ -321,5 +321,24 @@ abstract class Product
     public function registerChildClass(string $class): void
     {
         static::$childrenClasses[] = $class;
+    }
+
+    public function delete(): void
+    {
+        $extraAttributeStatement = self::withPDO()->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE product_id=?',
+                static::EXTRA_ATTRIBUTE_TABLE_NAME,
+            )
+        );
+        $baseStatement = self::withPDO()->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE id=?',
+                static::BASE_TABLE_NAME,
+            )
+        );
+
+        $extraAttributeStatement->execute([$this->getDatabaseId()]);
+        $baseStatement->execute([$this->getDatabaseId()]);
     }
 }

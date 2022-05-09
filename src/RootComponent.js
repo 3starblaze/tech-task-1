@@ -36,7 +36,6 @@ export default function Root() {
       <button
         onClick={ () => {
           deleteIds(checkedCards)
-            .then(res => res.json())
             .then(_ => location = location) // refresh page
         } }>
         Mass delete

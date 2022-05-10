@@ -69,17 +69,15 @@ class ProductFurniture extends Product
 
     public function indexCardData(): array
     {
-        return [
-            $this->getSku(),
-            $this->getName(),
-            $this->getPrice(),
-            sprintf(
+        return array_merge(
+            parent::indexCardData(),
+            [sprintf(
                 'Dimensions: %sx%sx%s cm',
                 $this->getHeight(),
                 $this->getWidth(),
                 $this->getLength(),
-            ),
-        ];
+            )],
+        );
     }
 
     public function getHeight()

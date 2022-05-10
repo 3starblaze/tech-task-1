@@ -53,12 +53,10 @@ class ProductBook extends Product
 
     public function indexCardData(): array
     {
-        return [
-            $this->getSku(),
-            $this->getName(),
-            $this->getPrice(),
-            "Weight: {$this->getWeight()} KG",
-        ];
+        return array_merge(
+            parent::indexCardData(),
+            ["Weight: {$this->getWeight()} KG"],
+        );
     }
 
     public function getWeight()

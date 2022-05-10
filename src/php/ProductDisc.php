@@ -51,12 +51,10 @@ class ProductDisc extends Product
 
     public function indexCardData(): array
     {
-        return [
-            $this->getSku(),
-            $this->getName(),
-            $this->getPrice(),
-            "Size: {$this->getDiscSize()} MB",
-        ];
+        return array_merge(
+            parent::indexCardData(),
+            ["Size: {$this->getDiscSize()} MB"],
+        );
     }
 
     public function getDiscSize()

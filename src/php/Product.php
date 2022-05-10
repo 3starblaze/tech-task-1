@@ -272,7 +272,14 @@ abstract class Product
     /**
      * Return a list of data that should be shown in the index card.
      */
-    abstract public function indexCardData(): array;
+    public function indexCardData(): array
+    {
+        return [
+            $this->getSku(),
+            $this->getName(),
+            Util::formatCents($this->getPrice()),
+        ];
+    }
 
     public function save(): void
     {

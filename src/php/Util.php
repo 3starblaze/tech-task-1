@@ -39,4 +39,12 @@ class Util
         // TODO Hide exception info in production
         throw new \Exception($message, $code, $previous);
     }
+
+    /**
+     * Convert cents into dollars and make it human-readable.
+     */
+    public static function formatCents(int $cents): string
+    {
+        return sprintf('%.2f $', $cents / 100);
+    }
 }

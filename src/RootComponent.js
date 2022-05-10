@@ -34,6 +34,7 @@ export default function Root() {
   return (
     <>
       <button
+        id="delete-product-btn"
         onClick={ () => {
           deleteIds(checkedCards)
             .then(_ => location = location) // refresh page

@@ -7,14 +7,6 @@ use TechTask\ProductBook\ProductBook;
 use TechTask\ProductFurniture\ProductFurniture;
 use TechTask\Router\Router;
 
-$pdo = new PDO(
-    sprintf("mysql:dbname=%s;host=%s", $_ENV['DB_NAME'], $_ENV['DB_HOST']),
-    $_ENV['DB_USERNAME'],
-    $_ENV['DB_PASSWORD'],
-);
-
-Product::setPdo($pdo);
-
 $products = array(
     new ProductDisc(
         "DSC123123",
@@ -49,22 +41,6 @@ foreach($products as $product) {
     </head>
     <body>
         <h1>This is Root route.</h1>
-        <h2>Discs</h2>
-        <?php foreach(ProductDisc::all() as $product): ?>
-            <p><?= $product->toJson() ?></p>
-        <?php endforeach; ?>
-
-
-        <h2>Books</h2>
-        <?php foreach(ProductBook::all() as $product): ?>
-            <p><?= $product->toJson() ?></p>
-        <?php endforeach; ?>
-
-        <h2>Furniture</h2>
-        <?php foreach(ProductFurniture::all() as $product): ?>
-            <p><?= $product->toJson() ?></p>
-        <?php endforeach; ?>
-
         <div id="root"></div>
         <script src="./app.bundle.js"></script>
     </body>

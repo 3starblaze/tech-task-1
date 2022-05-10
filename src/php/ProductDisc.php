@@ -49,6 +49,14 @@ class ProductDisc extends Product
         ));
     }
 
+    public function indexCardData(): array
+    {
+        return array_merge(
+            parent::indexCardData(),
+            ["Size: {$this->getDiscSize()} MB"],
+        );
+    }
+
     public function getDiscSize()
     {
         return $this->discSize;

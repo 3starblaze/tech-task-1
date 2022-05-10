@@ -67,6 +67,19 @@ class ProductFurniture extends Product
         ));
     }
 
+    public function indexCardData(): array
+    {
+        return array_merge(
+            parent::indexCardData(),
+            [sprintf(
+                'Dimensions: %sx%sx%s cm',
+                $this->getHeight(),
+                $this->getWidth(),
+                $this->getLength(),
+            )],
+        );
+    }
+
     public function getHeight()
     {
         return $this->height;

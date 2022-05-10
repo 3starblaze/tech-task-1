@@ -51,6 +51,14 @@ class ProductBook extends Product
         ));
     }
 
+    public function indexCardData(): array
+    {
+        return array_merge(
+            parent::indexCardData(),
+            ["Weight: {$this->getWeight()} KG"],
+        );
+    }
+
     public function getWeight()
     {
         return $this->weight;

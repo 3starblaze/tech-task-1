@@ -1,4 +1,11 @@
-#press-me-btn {
-    border-radius: 10px;
-    background: #dddddd;
+.card-container {
+    display: grid;
+    gap: 2em;
+    grid-template-columns: 1fr 1fr 1fr 1fr
+}
+
+.card {
+    background: #bbbbbb;
+    display: grid;
+    justify-content: center;
 }

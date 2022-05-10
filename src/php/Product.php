@@ -7,6 +7,10 @@ use TechTask\Column\Column;
 
 /**
  * Product database model which handles updates in database.
+ *
+ * When making children of this class, make sure to register them via
+ * `registerChildClass()`, so that you can use static methods that operate on
+ * all classes.
  */
 abstract class Product
 {
@@ -36,6 +40,11 @@ abstract class Product
      * \PDO instance that is used to communicate to database.
      */
     private static ?\PDO $pdo = null;
+
+    /**
+     * String array of namespaced class names that are children of Product.
+     */
+    private static array $childrenClasses = [];
 
     private $sku;
 
@@ -87,6 +96,14 @@ abstract class Product
     }
 
     /**
+     * Return whether the class is Product (and not just a child).
+     */
+    protected static function isBase(): bool
+    {
+        return get_class() == get_called_class();
+    }
+
+    /**
      * Returns an array of columns that corresponds to this class's extra
      * attribute table's columns.
      *
@@ -109,8 +126,18 @@ abstract class Product
      *
      * @param $id The database id of the requested product.
      */
-    public static function fromId(int $id): Product
+    public static function fromId(int $id): ?Product
     {
+        if (static::isBase()) {
+            foreach (static::$childrenClasses as $class) {
+                $productCandidate = $class::fromId($id);
+                if ($productCandidate) {
+                    return $productCandidate;
+                }
+            }
+            return null;
+        }
+
         $baseTable = static::BASE_TABLE_NAME;
         $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
         $baseColumns = static::getBaseColumns();
@@ -146,7 +173,7 @@ abstract class Product
             $product->setDatabaseId($id);
             return $product;
         } else {
-            Util::throwError('Product was not found!');
+            return null;
         }
     }
 
@@ -157,16 +184,22 @@ abstract class Product
      */
     public static function all(): array
     {
-        $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
+        if (static::isBase()) {
+            return array_merge(...array_map(function (string $class) {
+                return $class::all();
+            }, static::$childrenClasses));
+        } else {
+            $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
 
-        return array_map(
-            function (array $res) {
-                return static::fromId($res[0]);
-            },
-            static::withPDO()
-            ->query("SELECT product_id FROM $extraTable")
-            ->fetchAll(),
-        );
+            return array_map(
+                function (array $res) {
+                    return static::fromId($res[0]);
+                },
+                static::withPDO()
+                ->query("SELECT product_id FROM $extraTable")
+                ->fetchAll(),
+            );
+        }
     }
 
     /**
@@ -236,6 +269,18 @@ abstract class Product
      */
     abstract public function toJson();
 
+    /**
+     * Return a list of data that should be shown in the index card.
+     */
+    public function indexCardData(): array
+    {
+        return [
+            $this->getSku(),
+            $this->getName(),
+            Util::formatCents($this->getPrice()),
+        ];
+    }
+
     public function save(): void
     {
         $statement = self::withPdo()->prepare(
@@ -273,5 +318,34 @@ abstract class Product
     {
         return $this->databaseId
             ?? Util::throwError('Model has no ID because it is not saved!');
+    }
+
+    /**
+     * Register a child class which is needed for internal purposes.
+     *
+     * @param $class Namespaced name of the class.
+     */
+    public function registerChildClass(string $class): void
+    {
+        static::$childrenClasses[] = $class;
+    }
+
+    public function delete(): void
+    {
+        $extraAttributeStatement = self::withPDO()->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE product_id=?',
+                static::EXTRA_ATTRIBUTE_TABLE_NAME,
+            )
+        );
+        $baseStatement = self::withPDO()->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE id=?',
+                static::BASE_TABLE_NAME,
+            )
+        );
+
+        $extraAttributeStatement->execute([$this->getDatabaseId()]);
+        $baseStatement->execute([$this->getDatabaseId()]);
     }
 }

@@ -4,6 +4,7 @@ namespace TechTask\ProductBook;
 
 use TechTask\Product\Product;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 class ProductBook extends Product
 {
@@ -38,6 +39,13 @@ class ProductBook extends Product
     protected function getExtraAttributeArgs(): array
     {
         return array($this->weight);
+    }
+
+    public static function getExtraFields(): array
+    {
+        return [
+            new Field('Weight (KG)', 'weight', 'weight'),
+        ];
     }
 
     public function toJson()

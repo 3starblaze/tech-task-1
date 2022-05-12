@@ -114,6 +114,8 @@ abstract class Product
      */
     abstract protected static function getExtraColumns(): array;
 
+    abstract public static function getExtraFields(): array;
+
     public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;
@@ -325,9 +327,19 @@ abstract class Product
      *
      * @param $class Namespaced name of the class.
      */
-    public function registerChildClass(string $class): void
+    public function registerChildClass(string $identifier, string $class): void
     {
-        static::$childrenClasses[] = $class;
+        if (array_key_exists($identifier, static::$childrenClasses)) {
+            Util::throwError(
+                "Identifier '$identifier' has already been registered!"
+            );
+        }
+        static::$childrenClasses[$identifier] = $class;
+    }
+
+    public function getChildClasses(): array
+    {
+        return static::$childrenClasses;
     }
 
     public function delete(): void

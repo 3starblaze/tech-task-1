@@ -4,6 +4,7 @@ namespace TechTask\ProductFurniture;
 
 use TechTask\Product\Product;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 class ProductFurniture extends Product
 {
@@ -46,6 +47,15 @@ class ProductFurniture extends Product
             new Column('height', 'int'),
             new Column('width', 'int'),
             new Column('length', 'int'),
+        ];
+    }
+
+    public static function getExtraFields(): array
+    {
+        return [
+            new Field('Height (CM)', 'height', 'height'),
+            new Field('Width (CM)', 'width', 'width'),
+            new Field('Length (CM)', 'length', 'length'),
         ];
     }
 

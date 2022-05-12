@@ -35,4 +35,21 @@ class Api
 
         return json_encode($obj);
     }
+
+    public static function formData(): string
+    {
+        $result = array_map(
+            function (string $identifier, string $class) {
+                return [
+                    'productIdentifier' => $identifier,
+                    'fields' => $class::getExtraFields(),
+                    'productDescription' => 'TODO An exciting description',
+                ];
+            },
+            array_keys(Product::getChildClasses()),
+            Product::getChildClasses(),
+        );
+
+        return json_encode($result);
+    }
 }

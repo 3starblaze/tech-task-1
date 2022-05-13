@@ -53,6 +53,10 @@ class ProductBook extends Product
         return 'Please, provide weight';
     }
 
+    public static function getFormSelectValue(): string
+    {
+        return 'Book';
+    }
 
     public function toJson()
     {

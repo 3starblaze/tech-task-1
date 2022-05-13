@@ -42,6 +42,7 @@ class Api
             function (string $identifier, string $class) {
                 return [
                     'productIdentifier' => $identifier,
+                    'formSelectValue' => $class::getFormSelectValue(),
                     'fields' => $class::getExtraFields(),
                     'productDescription' => $class::getFormDescription(),
                 ];

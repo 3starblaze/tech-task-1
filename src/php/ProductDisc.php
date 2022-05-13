@@ -51,6 +51,11 @@ class ProductDisc extends Product
         return 'Please, provide size';
     }
 
+    public static function getFormSelectValue(): string
+    {
+        return 'DVD';
+    }
+
     public function toJson()
     {
         return json_encode(array(

@@ -64,6 +64,11 @@ class ProductFurniture extends Product
         return 'Please, provide dimensions';
     }
 
+    public static function getFormSelectValue(): string
+    {
+        return 'Furniture';
+    }
+
     protected function getExtraAttributeArgs(): array
     {
         return array($this->height, $this->width, $this->length);

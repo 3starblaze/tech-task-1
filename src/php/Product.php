@@ -124,6 +124,11 @@ abstract class Product
      */
     abstract public function getFormDescription(): string;
 
+    /**
+     * Return the display value of option in product `select` element.
+     */
+    abstract public static function getFormSelectValue(): string;
+
     public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;

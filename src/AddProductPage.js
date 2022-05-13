@@ -54,7 +54,7 @@ export default function Page() {
             <option
               key={ product.productIdentifier }
               value={ product.productIdentifier }>
-              { product.productIdentifier }
+              { product.formSelectValue }
             </option>
           ) }
         </select>

@@ -59,6 +59,11 @@ class ProductFurniture extends Product
         ];
     }
 
+    public function getFormDescription(): string
+    {
+        return 'Please, provide dimensions';
+    }
+
     protected function getExtraAttributeArgs(): array
     {
         return array($this->height, $this->width, $this->length);

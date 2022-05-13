@@ -43,7 +43,7 @@ class Api
                 return [
                     'productIdentifier' => $identifier,
                     'fields' => $class::getExtraFields(),
-                    'productDescription' => 'TODO An exciting description',
+                    'productDescription' => $class::getFormDescription(),
                 ];
             },
             array_keys(Product::getChildClasses()),

@@ -48,6 +48,12 @@ class ProductBook extends Product
         ];
     }
 
+    public function getFormDescription(): string
+    {
+        return 'Please, provide weight';
+    }
+
+
     public function toJson()
     {
         return json_encode(array(

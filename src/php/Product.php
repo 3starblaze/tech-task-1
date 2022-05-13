@@ -116,6 +116,14 @@ abstract class Product
 
     abstract public static function getExtraFields(): array;
 
+    /**
+     * Return description that is rendered along the extra fields.
+     *
+     * @see getExtraFields Information that this function's return value
+     * describes.
+     */
+    abstract public function getFormDescription(): string;
+
     public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;

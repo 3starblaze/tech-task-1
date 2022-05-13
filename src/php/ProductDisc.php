@@ -46,6 +46,11 @@ class ProductDisc extends Product
         ];
     }
 
+    public function getFormDescription(): string
+    {
+        return 'Please, provide size';
+    }
+
     public function toJson()
     {
         return json_encode(array(

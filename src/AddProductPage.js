@@ -30,24 +30,47 @@ export default function Page() {
         <h1>Product Add</h1>
 
         <div className="right-side">
-          <button>Save</button>
+          <button
+            onClick={ () =>
+              document.getElementById('product_form').requestSubmit()
+            }
+          >Save</button>
           <button>Cancel</button>
         </div>
       </header>
 
-      <div id="product_form">
-        <label>SKU</label>
-        <input id="sku"></input>
+      <form
+        id="product_form"
+        action={ baseUrl + '/api/products/new' }
+        method="post"
+      >
+        <label htmlFor="sku">SKU</label>
+        <input
+          id="sku"
+          name="sku"
+          required
+        />
 
-        <label>Name</label>
-        <input id="name"></input>
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          name="name"
+          required
+        />
 
-        <label>Price ($)</label>
-        <input id="price"></input>
+        <label htmlFor="price">Price ($)</label>
+        <input
+          id="price"
+          name="price"
+          type="number"
+          step="0.01"
+          required
+        />
 
-        <label>Type switcher</label>
+        <label htmlFor="productType">Type switcher</label>
         <select
           id="productType"
+          name="productType"
           onChange={ ev => setCurrentProduct(ev.target.value) }
         >
           { data.map(product =>
@@ -66,6 +89,7 @@ export default function Page() {
                 <input
                   id={ field.styleId }
                   name={ field.name }
+                  required
                 />
               </React.Fragment>
             )
@@ -76,7 +100,7 @@ export default function Page() {
            }}>
           { extractProductData(data, currentProduct)?.productDescription }
         </p>
-      </div>
+      </form>
     </div>
   );
 }

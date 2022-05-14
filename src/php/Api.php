@@ -23,6 +23,11 @@ class Api
         return json_encode($result);
     }
 
+    public static function new(): string
+    {
+        return json_encode($_POST);
+    }
+
     public static function massDelete(): string
     {
 

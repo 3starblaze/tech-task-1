@@ -49,8 +49,8 @@ $router->registerRoute('/api/products/form-data', function () {
 });
 
 $router->registerRoute('/api/products/new', function () {
-    header('Content-Type: application/json; charset=utf-8');
-    echo Api::new();
+    Api::new();
+    header("Location: /");
 });
 
 $router->handleRequest();

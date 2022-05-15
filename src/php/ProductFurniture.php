@@ -52,10 +52,16 @@ class ProductFurniture extends Product
 
     public static function getExtraFields(): array
     {
+        function makeField(string $display, string $id) {
+            return new Field($display, $id, $id, [
+                'type' => 'number',
+            ]);
+        }
+
         return [
-            new Field('Height (CM)', 'height', 'height'),
-            new Field('Width (CM)', 'width', 'width'),
-            new Field('Length (CM)', 'length', 'length'),
+            makeField('Height (CM)', 'height'),
+            makeField('Width (CM)', 'width'),
+            makeField('Length (CM)', 'length'),
         ];
     }
 

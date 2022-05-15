@@ -90,6 +90,7 @@ export default function Page() {
                   id={ field.styleId }
                   name={ field.name }
                   required
+                  { ...field.attributes }
                 />
               </React.Fragment>
             )

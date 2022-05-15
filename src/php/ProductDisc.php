@@ -42,7 +42,9 @@ class ProductDisc extends Product
     public static function getExtraFields(): array
     {
         return [
-            new Field('Size (MB)', 'discSize', 'size'),
+            new Field('Size (MB)', 'discSize', 'size', [
+                'type' => 'number',
+            ]),
         ];
     }
 

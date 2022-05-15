@@ -51,7 +51,10 @@ export default function Page() {
               document.getElementById('product_form').requestSubmit()
             }
           >Save</button>
-          <button>Cancel</button>
+          { /* FIXME Hardcoded URL */ }
+          <button>
+            <a href="/">Cancel</a>
+          </button>
         </div>
       </header>
 

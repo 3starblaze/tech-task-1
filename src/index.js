@@ -4,6 +4,7 @@ import AddProductPage from "./AddProductPage";
 import { createRoot } from 'react-dom/client';
 import store from './store';
 import { Provider } from 'react-redux';
+import './index.scss';
 
 let component;
 

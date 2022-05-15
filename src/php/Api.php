@@ -43,7 +43,7 @@ class Api
 
     public static function formData(): string
     {
-        $result = array_map(
+        $productData = array_map(
             function (string $identifier, string $class) {
                 return [
                     'productIdentifier' => $identifier,
@@ -56,6 +56,9 @@ class Api
             Product::getChildClasses(),
         );
 
-        return json_encode($result);
+        return json_encode([
+            'baseFields' => Product::getBaseFields(),
+            'productData' => $productData,
+        ]);
     }
 }

@@ -5,11 +5,27 @@ import styles from './AddProductPage.scss';
 const baseUrl = 'http://localhost:8080';
 
 function extractProductData(data, currentProduct) {
-  return data.find(val => val.productIdentifier == currentProduct);
+  return (data?.productData || [])
+    .find(val => val.productIdentifier == currentProduct);
+}
+
+function renderFields(fields) {
+  if (!fields) return;
+  return fields.map((field, i) =>
+    <React.Fragment key={ i }>
+      <label htmlFor={ field.name }>{ field.label }</label>
+      <input
+        id={ field.styleId }
+        name={ field.name }
+        required
+        { ...field.attributes }
+      />
+    </React.Fragment>
+  )
 }
 
 export default function Page() {
-  const [data, setData] = useState([]); // Form data fetched from API
+  const [data, setData] = useState({}); // Form data fetched from API
   const [currentProduct, setCurrentProduct] = useState(null);
 
   useEffect(() => {
@@ -20,7 +36,7 @@ export default function Page() {
         // json is used directly because `setData` is asynchronous and `data`
         // variable is not available at the moment
         // TODO Handle this gracefully if `json[0]` cannot be accessed
-        setCurrentProduct(json[0].productIdentifier);
+        setCurrentProduct(json.productData[0].productIdentifier);
       });
   }, []);
 
@@ -44,36 +60,14 @@ export default function Page() {
         action={ baseUrl + '/api/products/new' }
         method="post"
       >
-        <label htmlFor="sku">SKU</label>
-        <input
-          id="sku"
-          name="sku"
-          required
-        />
-
-        <label htmlFor="name">Name</label>
-        <input
-          id="name"
-          name="name"
-          required
-        />
-
-        <label htmlFor="price">Price ($)</label>
-        <input
-          id="price"
-          name="price"
-          type="number"
-          step="0.01"
-          required
-        />
-
+        { renderFields(data?.baseFields) }
         <label htmlFor="productType">Type switcher</label>
         <select
           id="productType"
           name="productType"
           onChange={ ev => setCurrentProduct(ev.target.value) }
         >
-          { data.map(product =>
+          { (data?.productData || []).map(product =>
             <option
               key={ product.productIdentifier }
               value={ product.productIdentifier }>
@@ -81,20 +75,7 @@ export default function Page() {
             </option>
           ) }
         </select>
-        {
-          extractProductData(data, currentProduct)?.fields
-            .map((field, i) =>
-              <React.Fragment key={ i }>
-                <label htmlFor={ field.name }>{ field.label }</label>
-                <input
-                  id={ field.styleId }
-                  name={ field.name }
-                  required
-                  { ...field.attributes }
-                />
-              </React.Fragment>
-            )
-        }
+        { renderFields(extractProductData(data, currentProduct)?.fields) }
         <p style={{
              margin: 0,
              gridColumn: 'span 2',

@@ -4,6 +4,7 @@ namespace TechTask\Product;
 
 use TechTask\Util\Util;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 /**
  * Product database model which handles updates in database.
@@ -215,6 +216,18 @@ abstract class Product
                 ->fetchAll(),
             );
         }
+    }
+
+    public static function getBaseFields()
+    {
+        return [
+          new Field('SKU', 'sku', 'sku'),
+          new Field('Name', 'name', 'name'),
+          new Field('Price ($)', 'price', 'price', [
+              'type' => 'number',
+              'step' => '0.01',
+          ]),
+        ];
     }
 
     /**

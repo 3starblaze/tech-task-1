@@ -44,7 +44,7 @@ class ProductBook extends Product
     public static function getExtraFields(): array
     {
         return [
-            new Field('Weight (KG)', 'weight', 'weight', [
+            new Field('Weight (KG)', 'weight', 'weight', floatval, [
                 'type' => 'number',
                 'step' => '0.01',
             ]),

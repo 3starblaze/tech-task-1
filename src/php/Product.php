@@ -203,7 +203,7 @@ abstract class Product
         if (static::isBase()) {
             return array_merge(...array_map(function (string $class) {
                 return $class::all();
-            }, static::$childrenClasses));
+            }, array_values(static::$childrenClasses)));
         } else {
             $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
 
@@ -221,13 +221,37 @@ abstract class Product
     public static function getBaseFields()
     {
         return [
-          new Field('SKU', 'sku', 'sku'),
-          new Field('Name', 'name', 'name'),
-          new Field('Price ($)', 'price', 'price', [
-              'type' => 'number',
-              'step' => '0.01',
-          ]),
+          new Field('SKU', 'sku', 'sku', Util::getIdentity()),
+          new Field('Name', 'name', 'name', Util::getIdentity()),
+          new Field(
+              'Price ($)',
+              'price',
+              'price',
+              function (string $val) {
+                  // Dollars are converted to cents
+                  return (int)(floatval($val) * 100);
+              },
+              [
+                  'type' => 'number',
+                  'step' => '0.01',
+              ]
+          ),
         ];
+    }
+
+    /**
+     * Use request data to create a new instance of a product.
+     */
+    public static function requestToInstance(array $request)
+    {
+        return new static(
+            ...array_map(function (Field $field) use ($request) {
+                return $field->getConverter()($request[$field->getName()]);
+            }, array_merge(
+                static::getBaseFields(),
+                static::getExtraFields(),
+            ))
+        );
     }
 
     /**

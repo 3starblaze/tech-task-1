@@ -53,7 +53,7 @@ class ProductFurniture extends Product
     public static function getExtraFields(): array
     {
         function makeField(string $display, string $id) {
-            return new Field($display, $id, $id, [
+            return new Field($display, $id, $id, 'intval', [
                 'type' => 'number',
             ]);
         }

@@ -47,4 +47,14 @@ class Util
     {
         return sprintf('%.2f $', $cents / 100);
     }
+
+    /**
+     * Return function that takes a value and returns it unchanged.
+     */
+    public static function getIdentity()
+    {
+        return function ($val) {
+            return $val;
+        };
+    }
 }

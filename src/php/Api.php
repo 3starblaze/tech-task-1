@@ -25,7 +25,11 @@ class Api
 
     public static function new(): string
     {
-        return json_encode($_POST);
+        $data = $_POST;
+        $class = Product::getChildClasses()[$data['productType']];
+        $inst = $class::requestToInstance($data);
+        $inst->save();
+        return $inst->toJson();
     }
 
     public static function massDelete(): string

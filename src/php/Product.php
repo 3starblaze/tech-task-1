@@ -115,6 +115,18 @@ abstract class Product
      */
     abstract protected static function getExtraColumns(): array;
 
+    /**
+     * Return an array of fields which correspond to the inputs that this class
+     * will make.
+     *
+     * Note: Make sure that the fields are in the same order as the extra
+     * parameters in the constructor because `requestToInstance` relies on
+     * the order of fields to construct a product instance.
+     *
+     * @see requestToInstance
+     *
+     * @return Field[]
+     */
     abstract public static function getExtraFields(): array;
 
     /**

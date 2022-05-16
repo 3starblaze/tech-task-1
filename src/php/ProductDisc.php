@@ -4,6 +4,7 @@ namespace TechTask\ProductDisc;
 
 use TechTask\Product\Product;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 class ProductDisc extends Product
 {
@@ -36,6 +37,25 @@ class ProductDisc extends Product
         return [
             new Column('disc_size', 'int'),
         ];
+    }
+
+    public static function getExtraFields(): array
+    {
+        return [
+            new Field('Size (MB)', 'discSize', 'size', 'intval', [
+                'type' => 'number',
+            ]),
+        ];
+    }
+
+    public function getFormDescription(): string
+    {
+        return 'Please, provide size';
+    }
+
+    public static function getFormSelectValue(): string
+    {
+        return 'DVD';
     }
 
     public function toJson()

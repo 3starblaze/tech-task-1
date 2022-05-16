@@ -4,6 +4,7 @@ namespace TechTask\Product;
 
 use TechTask\Util\Util;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 /**
  * Product database model which handles updates in database.
@@ -114,6 +115,33 @@ abstract class Product
      */
     abstract protected static function getExtraColumns(): array;
 
+    /**
+     * Return an array of fields which correspond to the inputs that this class
+     * will make.
+     *
+     * Note: Make sure that the fields are in the same order as the extra
+     * parameters in the constructor because `requestToInstance` relies on
+     * the order of fields to construct a product instance.
+     *
+     * @see requestToInstance
+     *
+     * @return Field[]
+     */
+    abstract public static function getExtraFields(): array;
+
+    /**
+     * Return description that is rendered along the extra fields.
+     *
+     * @see getExtraFields Information that this function's return value
+     * describes.
+     */
+    abstract public function getFormDescription(): string;
+
+    /**
+     * Return the display value of option in product `select` element.
+     */
+    abstract public static function getFormSelectValue(): string;
+
     public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;
@@ -187,7 +215,7 @@ abstract class Product
         if (static::isBase()) {
             return array_merge(...array_map(function (string $class) {
                 return $class::all();
-            }, static::$childrenClasses));
+            }, array_values(static::$childrenClasses)));
         } else {
             $extraTable = static::EXTRA_ATTRIBUTE_TABLE_NAME;
 
@@ -200,6 +228,42 @@ abstract class Product
                 ->fetchAll(),
             );
         }
+    }
+
+    public static function getBaseFields()
+    {
+        return [
+          new Field('SKU', 'sku', 'sku', Util::getIdentity()),
+          new Field('Name', 'name', 'name', Util::getIdentity()),
+          new Field(
+              'Price ($)',
+              'price',
+              'price',
+              function (string $val) {
+                  // Dollars are converted to cents
+                  return (int)(floatval($val) * 100);
+              },
+              [
+                  'type' => 'number',
+                  'step' => '0.01',
+              ]
+          ),
+        ];
+    }
+
+    /**
+     * Use request data to create a new instance of a product.
+     */
+    public static function requestToInstance(array $request)
+    {
+        return new static(
+            ...array_map(function (Field $field) use ($request) {
+                return $field->getConverter()($request[$field->getName()]);
+            }, array_merge(
+                static::getBaseFields(),
+                static::getExtraFields(),
+            ))
+        );
     }
 
     /**
@@ -325,9 +389,19 @@ abstract class Product
      *
      * @param $class Namespaced name of the class.
      */
-    public function registerChildClass(string $class): void
+    public function registerChildClass(string $identifier, string $class): void
     {
-        static::$childrenClasses[] = $class;
+        if (array_key_exists($identifier, static::$childrenClasses)) {
+            Util::throwError(
+                "Identifier '$identifier' has already been registered!"
+            );
+        }
+        static::$childrenClasses[$identifier] = $class;
+    }
+
+    public function getChildClasses(): array
+    {
+        return static::$childrenClasses;
     }
 
     public function delete(): void

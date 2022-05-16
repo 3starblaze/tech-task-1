@@ -23,6 +23,15 @@ class Api
         return json_encode($result);
     }
 
+    public static function new(): string
+    {
+        $data = $_POST;
+        $class = Product::getChildClasses()[$data['productType']];
+        $inst = $class::requestToInstance($data);
+        $inst->save();
+        return $inst->toJson();
+    }
+
     public static function massDelete(): string
     {
 
@@ -34,5 +43,26 @@ class Api
         }
 
         return json_encode($obj);
+    }
+
+    public static function formData(): string
+    {
+        $productData = array_map(
+            function (string $identifier, string $class) {
+                return [
+                    'productIdentifier' => $identifier,
+                    'formSelectValue' => $class::getFormSelectValue(),
+                    'fields' => $class::getExtraFields(),
+                    'productDescription' => $class::getFormDescription(),
+                ];
+            },
+            array_keys(Product::getChildClasses()),
+            Product::getChildClasses(),
+        );
+
+        return json_encode([
+            'baseFields' => Product::getBaseFields(),
+            'productData' => $productData,
+        ]);
     }
 }

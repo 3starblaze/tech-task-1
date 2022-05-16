@@ -1,6 +1,5 @@
 import React from "react";
 import Card from "./Card.js";
-import "./index.scss";
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
@@ -41,6 +40,12 @@ export default function Root() {
         } }>
         Mass delete
       </button>
+
+      { /* FIXME Hardcoded URL */ }
+      <button>
+        <a href="add-product">Add</a>
+      </button>
+
       <div className="card-container">
         {Object.keys(cards).map(id =>
           <Card key={id}

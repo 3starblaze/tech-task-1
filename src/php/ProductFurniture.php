@@ -4,6 +4,7 @@ namespace TechTask\ProductFurniture;
 
 use TechTask\Product\Product;
 use TechTask\Column\Column;
+use TechTask\Field\Field;
 
 class ProductFurniture extends Product
 {
@@ -47,6 +48,31 @@ class ProductFurniture extends Product
             new Column('width', 'int'),
             new Column('length', 'int'),
         ];
+    }
+
+    public static function getExtraFields(): array
+    {
+        function makeField(string $display, string $id) {
+            return new Field($display, $id, $id, 'intval', [
+                'type' => 'number',
+            ]);
+        }
+
+        return [
+            makeField('Height (CM)', 'height'),
+            makeField('Width (CM)', 'width'),
+            makeField('Length (CM)', 'length'),
+        ];
+    }
+
+    public function getFormDescription(): string
+    {
+        return 'Please, provide dimensions';
+    }
+
+    public static function getFormSelectValue(): string
+    {
+        return 'Furniture';
     }
 
     protected function getExtraAttributeArgs(): array

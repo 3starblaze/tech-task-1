@@ -4,6 +4,8 @@
 
 import React from "react";
 import Card from "./Card.js";
+import Divider from "./Divider";
+import Footer from "./Footer";
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
@@ -53,15 +55,24 @@ export default function Root() {
         <a href={ route('add-product') }>Add</a>
       </button>
 
+      <Divider />
+
       <div className="card-container">
         {Object.keys(cards).map(id =>
           <Card key={id}
                 databaseId={id}>
-            { cards[id].indexCardData
-              .map((line, i) => <p key={i}>{ line }</p>) }
+            <ul>
+              { cards[id].indexCardData
+                .map((line, i) => <li key={i}>{ line }</li>) }
+            </ul>
+
           </Card>
         )}
       </div>
+
+      <Divider />
+
+      <Footer />
     </>
   );
 }

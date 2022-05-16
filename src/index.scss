@@ -1,7 +1,27 @@
 @import "variables.scss";
 
+
+* {
+    color: $primary-color;
+}
+
 #root {
-    margin: 0 2em;
+    margin: 1em 2em;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+    h1 {
+        margin: 0;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 1em;
+    }
 }
 
 .card-container {
@@ -37,5 +57,5 @@
 
 button a {
     text-decoration: none;
-    color: black;
+    color: inherit;
 }

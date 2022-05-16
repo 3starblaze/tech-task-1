@@ -2,6 +2,12 @@
 
 namespace TechTask\Field;
 
+/**
+ * PHP representation of an input element.
+ *
+ * This class is used to define input attributes and to convert the incoming
+ * data to a PHP-friendly value.
+ */
 class Field implements \JsonSerializable
 {
     private $label;

@@ -1,12 +1,28 @@
+/**
+ * @file The component for the add-product route.
+ */
+
 import React, { useEffect, useState } from 'react';
 import styles from './AddProductPage.scss';
 import config, { route } from './config';
 
+/**
+ * Get product data from `data` given productIdentifier `currentProduct`.
+ *
+ * @param data {object} The payload data
+ * @param currentProduct {string} the product's `productIdentifier`
+ * @return {(object|undefined)}
+ */
 function extractProductData(data, currentProduct) {
   return (data?.productData || [])
     .find(val => val.productIdentifier == currentProduct);
 }
 
+/**
+ * Return an array of label-input element pairs which are deduced from `fields`.
+ * @param {(object|undefined)} fields
+ * @return {array}
+ */
 function renderFields(fields) {
   if (!fields) return;
   return fields.map((field, i) =>

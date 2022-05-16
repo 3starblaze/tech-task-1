@@ -1,3 +1,7 @@
+/**
+ * @file The component for the root route.
+ */
+
 import React from "react";
 import Card from "./Card.js";
 import { useEffect } from 'react';
@@ -5,6 +9,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
 import config, { route } from './config';
 
+/**
+ * Send request to delete Products defined in `ids`.
+ * @param {array} ids The array of ids that correspond to the products that are
+ * requested to be deleted.
+ */
 function deleteIds(ids) {
   return fetch(
     config.baseUrl + '/api/mass_delete', {

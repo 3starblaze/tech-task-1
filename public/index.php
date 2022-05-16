@@ -6,6 +6,7 @@ use Dotenv\Dotenv;
 use TechTask\Api\Api;
 use TechTask\Product\Product;
 use TechTask\Router\Router;
+use TechTask\Util\Util;
 
 Dotenv::createImmutable(__DIR__ . '/../')->load();
 $pdo = new PDO(
@@ -28,21 +29,19 @@ $router->registerRoute('/', ['TechTask\Util\Util', 'showBaseView']);
 
 $router->registerRoute('/add-product', ['TechTask\Util\Util', 'showBaseView']);
 
-$router->registerRoute('/api/index', function () {
-    header('Content-Type: application/json; charset=utf-8');
-    echo Api::index();
-});
+$router->registerRoute(
+    '/api/index',
+    Util::makeJsonHandler(['TechTask\Api\Api', 'index']),
+);
 
-$router->registerRoute('/api/mass_delete', function () {
-    header('Content-Type: application/json; charset=utf-8');
-    echo Api::massDelete();
-});
-
-$router->registerRoute('/api/products/form-data', function () {
-    header('Content-Type: application/json; charset=utf-8');
-    echo Api::formData();
-});
-
+$router->registerRoute(
+    '/api/mass_delete',
+    Util::makeJsonHandler(['TechTask\Api\Api', 'massDelete']),
+);
+$router->registerRoute(
+    '/api/products/form-data',
+    Util::makeJsonHandler(['TechTask\Api\Api', 'formData']),
+);
 $router->registerRoute('/api/products/new', function () {
     Api::new();
     header("Location: /");

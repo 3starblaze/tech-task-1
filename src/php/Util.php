@@ -57,4 +57,9 @@ class Util
             return $val;
         };
     }
+
+    public static function showBaseView(): void
+    {
+        require __DIR__ . '/views/base.html';
+    }
 }

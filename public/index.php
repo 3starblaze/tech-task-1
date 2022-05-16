@@ -7,11 +7,6 @@ use TechTask\Api\Api;
 use TechTask\Product\Product;
 use TechTask\Router\Router;
 
-function showBaseView(): void
-{
-    require __DIR__ . '/../src/php/views/base.html';
-}
-
 Dotenv::createImmutable(__DIR__ . '/../')->load();
 $pdo = new PDO(
     sprintf("mysql:dbname=%s;host=%s", $_ENV['DB_NAME'], $_ENV['DB_HOST']),
@@ -29,9 +24,9 @@ Product::registerChildClass(
 Product::setPdo($pdo);
 $router = new Router();
 
-$router->registerRoute('/', 'showBaseView');
+$router->registerRoute('/', ['TechTask\Util\Util', 'showBaseView']);
 
-$router->registerRoute('/add-product', 'showBaseView');
+$router->registerRoute('/add-product', ['TechTask\Util\Util', 'showBaseView']);
 
 $router->registerRoute('/api/index', function () {
     header('Content-Type: application/json; charset=utf-8');
@@ -54,5 +49,3 @@ $router->registerRoute('/api/products/new', function () {
 });
 
 $router->handleRequest();
-
-?>

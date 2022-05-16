@@ -3,12 +3,11 @@ import Card from "./Card.js";
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
-
-const baseUrl = 'http://localhost:8080';
+import config, { route } from './config';
 
 function deleteIds(ids) {
   return fetch(
-    baseUrl + '/api/mass_delete', {
+    config.baseUrl + '/api/mass_delete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -25,7 +24,7 @@ export default function Root() {
   );
 
   useEffect(() => {
-    fetch(baseUrl + '/api/index')
+    fetch(config.baseUrl + '/api/index')
       .then(res => res.json())
       .then(json => dispatch(init(json)));
   }, []);
@@ -41,9 +40,8 @@ export default function Root() {
         Mass delete
       </button>
 
-      { /* FIXME Hardcoded URL */ }
       <button>
-        <a href="add-product">Add</a>
+        <a href={ route('add-product') }>Add</a>
       </button>
 
       <div className="card-container">

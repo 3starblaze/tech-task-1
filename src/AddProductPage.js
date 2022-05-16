@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './AddProductPage.scss';
-
-// FIXME remove redundant declaration
-const baseUrl = 'http://localhost:8080';
+import config, { route } from './config';
 
 function extractProductData(data, currentProduct) {
   return (data?.productData || [])
@@ -29,7 +27,7 @@ export default function Page() {
   const [currentProduct, setCurrentProduct] = useState(null);
 
   useEffect(() => {
-    fetch(baseUrl + '/api/products/form-data')
+    fetch(config.baseUrl + '/api/products/form-data')
       .then(res => res.json())
       .then(json => {
         setData(json);
@@ -51,16 +49,15 @@ export default function Page() {
               document.getElementById('product_form').requestSubmit()
             }
           >Save</button>
-          { /* FIXME Hardcoded URL */ }
           <button>
-            <a href="/">Cancel</a>
+            <a href={ route('root') }>Cancel</a>
           </button>
         </div>
       </header>
 
       <form
         id="product_form"
-        action={ baseUrl + '/api/products/new' }
+        action={ config.baseUrl + '/api/products/new' }
         method="post"
       >
         { renderFields(data?.baseFields) }

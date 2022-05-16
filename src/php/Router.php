@@ -4,6 +4,10 @@ namespace TechTask\Router;
 
 use TechTask\Util\Util;
 
+/**
+ * Handle the connection between URL and the content by binding route to a
+ * callback.
+ */
 class Router
 {
     private $routeHandlers = array();

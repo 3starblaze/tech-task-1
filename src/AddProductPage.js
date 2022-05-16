@@ -1,14 +1,28 @@
+/**
+ * @file The component for the add-product route.
+ */
+
 import React, { useEffect, useState } from 'react';
 import styles from './AddProductPage.scss';
+import config, { route } from './config';
 
-// FIXME remove redundant declaration
-const baseUrl = 'http://localhost:8080';
-
+/**
+ * Get product data from `data` given productIdentifier `currentProduct`.
+ *
+ * @param data {object} The payload data
+ * @param currentProduct {string} the product's `productIdentifier`
+ * @return {(object|undefined)}
+ */
 function extractProductData(data, currentProduct) {
   return (data?.productData || [])
     .find(val => val.productIdentifier == currentProduct);
 }
 
+/**
+ * Return an array of label-input element pairs which are deduced from `fields`.
+ * @param {(object|undefined)} fields
+ * @return {array}
+ */
 function renderFields(fields) {
   if (!fields) return;
   return fields.map((field, i) =>
@@ -29,7 +43,7 @@ export default function Page() {
   const [currentProduct, setCurrentProduct] = useState(null);
 
   useEffect(() => {
-    fetch(baseUrl + '/api/products/form-data')
+    fetch(config.baseUrl + '/api/products/form-data')
       .then(res => res.json())
       .then(json => {
         setData(json);
@@ -51,16 +65,15 @@ export default function Page() {
               document.getElementById('product_form').requestSubmit()
             }
           >Save</button>
-          { /* FIXME Hardcoded URL */ }
           <button>
-            <a href="/">Cancel</a>
+            <a href={ route('root') }>Cancel</a>
           </button>
         </div>
       </header>
 
       <form
         id="product_form"
-        action={ baseUrl + '/api/products/new' }
+        action={ config.baseUrl + '/api/products/new' }
         method="post"
       >
         { renderFields(data?.baseFields) }

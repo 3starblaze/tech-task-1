@@ -4,6 +4,10 @@ namespace TechTask\Api;
 
 use TechTask\Product\Product;
 
+/**
+ * Handle requests for API routes. In MVC terminology this would be a
+ * controller for Product class.
+ */
 class Api
 {
     /**

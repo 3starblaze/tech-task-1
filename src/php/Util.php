@@ -57,4 +57,20 @@ class Util
             return $val;
         };
     }
+
+    public static function showBaseView(): void
+    {
+        require __DIR__ . '/views/base.html';
+    }
+
+    /**
+     * Return a function that calls $renderer and displays it as JSON.
+     */
+    public static function makeJsonHandler(callable $renderer): callable
+    {
+        return function () use ($renderer) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo $renderer();
+        };
+    }
 }

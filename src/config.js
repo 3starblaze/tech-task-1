@@ -1,5 +1,5 @@
 import React from "react";
-import Root from "./RootComponent";
+import RootPage from "./RootPage";
 import AddProductPage from "./AddProductPage";
 
 const config = {
@@ -8,7 +8,7 @@ const config = {
   routes: {
     '/': {
       name: 'root',
-      component: <Root />,
+      component: <RootPage />,
     },
     '/add-product': {
       name: 'add-product',

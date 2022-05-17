@@ -5,7 +5,6 @@
 import React, { useEffect, useState } from 'react';
 import Divider from './Divider';
 import Footer from './Footer';
-import './AddProductPage.scss';
 import config, { route } from './config';
 
 /**

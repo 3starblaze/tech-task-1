@@ -6,7 +6,6 @@ import React from "react";
 import Card from "./Card.js";
 import Divider from "./Divider";
 import Footer from "./Footer";
-import Button from "./Button";
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
@@ -47,18 +46,18 @@ export default function Root() {
         <h1>Product List</h1>
 
         <div className="buttons">
-          <Button
+          <button
             id="delete-product-btn"
             onClick={ () => {
               deleteIds(checkedCards)
                 .then(_ => location = location) // refresh page
             } }>
             Mass delete
-          </Button>
+          </button>
 
-          <Button>
+          <button>
             <a href={ route('add-product') }>Add</a>
-          </Button>
+          </button>
         </div>
       </header>
 

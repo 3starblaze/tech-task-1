@@ -4,6 +4,8 @@
 
 import React from "react";
 import Card from "./Card.js";
+import Divider from "./Divider";
+import Footer from "./Footer";
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { init } from './mainSlice';
@@ -40,28 +42,43 @@ export default function Root() {
 
   return (
     <>
-      <button
-        id="delete-product-btn"
-        onClick={ () => {
-          deleteIds(checkedCards)
-            .then(_ => location = location) // refresh page
-        } }>
-        Mass delete
-      </button>
+      <header>
+        <h1>Product List</h1>
 
-      <button>
-        <a href={ route('add-product') }>Add</a>
-      </button>
+        <div className="buttons">
+          <button
+            id="delete-product-btn"
+            onClick={ () => {
+              deleteIds(checkedCards)
+                .then(_ => location = location) // refresh page
+            } }>
+            Mass delete
+          </button>
+
+          <button>
+            <a href={ route('add-product') }>Add</a>
+          </button>
+        </div>
+      </header>
+
+      <Divider style={{ margin: '1em 0 2em 0' }} />
 
       <div className="card-container">
         {Object.keys(cards).map(id =>
           <Card key={id}
                 databaseId={id}>
-            { cards[id].indexCardData
-              .map((line, i) => <p key={i}>{ line }</p>) }
+            <ul>
+              { cards[id].indexCardData
+                .map((line, i) => <li key={i}>{ line }</li>) }
+            </ul>
+
           </Card>
         )}
       </div>
+
+      <Divider style={{ margin: '2em 0 1em 0' }} />
+
+      <Footer />
     </>
   );
 }

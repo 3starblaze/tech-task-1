@@ -3,7 +3,8 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import styles from './AddProductPage.scss';
+import Divider from './Divider';
+import Footer from './Footer';
 import config, { route } from './config';
 
 /**
@@ -71,6 +72,8 @@ export default function Page() {
         </div>
       </header>
 
+      <Divider style={{ margin: '1em 0 2em 0' }} />
+
       <form
         id="product_form"
         action={ config.baseUrl + '/api/products/new' }
@@ -99,6 +102,10 @@ export default function Page() {
           { extractProductData(data, currentProduct)?.productDescription }
         </p>
       </form>
+
+      <Divider style={{ margin: '2em 0 1em 0' }} />
+
+      <Footer />
     </div>
   );
 }

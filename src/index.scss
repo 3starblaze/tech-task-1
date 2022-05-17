@@ -1,16 +1,131 @@
+@import "variables.scss";
+
+* {
+    box-sizing: border-box;
+    font-family: "Liberation Sans", Arial, Helvetica, sans-serif;
+    color: $primary-color;
+}
+
+#root {
+    margin: 1em 2em;
+}
+
+#product_form {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+
+    label {
+        justify-self: end;
+    }
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+    h1 {
+        margin: 0;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 1em;
+    }
+
+    .right-side {
+        display: flex;
+        gap: 1em;
+        align-items: center;
+    }
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+
+    p {
+        margin: 0;
+        margin-bottom: 2em;
+    }
+}
+
 .card-container {
     display: grid;
     gap: 2em;
-    grid-template-columns: 1fr 1fr 1fr 1fr
+    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
 }
 
 .card {
-    background: #bbbbbb;
+    @include default-border;
     display: grid;
-    justify-content: center;
+
+    #delete-checkbox {
+        margin: 0;
+        margin-left: 1em;
+        justify-self: start;
+    }
+
+    .heading {
+        background: $accent-color;
+    }
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 1em 0;
+
+        li {
+            list-style: none;
+            margin-bottom: 0.20em;
+        }
+    }
 }
 
-button a {
-    text-decoration: none;
-    color: black;
+.divider {
+    margin: 0;
+    height: 2px;
+    background-color: $accent-color;
+}
+
+button {
+    background: white;
+    @include default-border;
+    cursor: pointer;
+
+    padding: 0.5em;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    &:hover {
+        background: $accent-color;
+        color: white;
+    }
+}
+
+@mixin input-attr() {
+    @include default-border;
+    background: white;
+    padding-left: 0.5em;
+    height: 2.5em;
+
+    &:focus {
+        border-left-width: 8px;
+        outline: none;
+    }
+}
+
+input {
+    @include input-attr;
+}
+
+select {
+    @include input-attr;
 }

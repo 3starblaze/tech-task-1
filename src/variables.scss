@@ -1,0 +1,7 @@
+$accent-color: #e04f4f;
+$primary-color: #10132c;
+
+@mixin default-border() {
+    border: solid $accent-color 2px;
+    border-radius: 4px;
+}

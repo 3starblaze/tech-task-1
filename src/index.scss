@@ -2,6 +2,7 @@
 
 
 * {
+    box-sizing: border-box;
     color: $primary-color;
 }
 
@@ -31,8 +32,7 @@ header {
 }
 
 .card {
-    border: solid $accent-color 2px;
-    border-radius: 4px;
+    @include default-border;
     display: grid;
 
     #delete-checkbox {
@@ -58,4 +58,24 @@ header {
 button a {
     text-decoration: none;
     color: inherit;
+}
+
+@mixin input-attr() {
+    @include default-border;
+    background: white;
+    padding-left: 0.5em;
+    height: 2.5em;
+
+    &:focus {
+        border-left-width: 8px;
+        outline: none;
+    }
+}
+
+input {
+    @include input-attr;
+}
+
+select {
+    @include input-attr;
 }

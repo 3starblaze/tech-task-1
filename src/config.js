@@ -1,10 +1,11 @@
 import React from "react";
+import NotFoundPage from "./NotFoundPage";
 import RootPage from "./RootPage";
 import AddProductPage from "./AddProductPage";
 
 const config = {
-  baseUrl: 'http://localhost:8080',
-  defaultComponent: <div>Route not found!</div>,
+  baseUrl: 'http://localhost',
+  defaultComponent: <NotFoundPage />,
   routes: {
     '/': {
       name: 'root',

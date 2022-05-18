@@ -329,11 +329,6 @@ abstract class Product
     abstract protected function getExtraAttributeArgs(): array;
 
     /**
-     * Convert the class to JSON for sending it via API.
-     */
-    abstract public function toJson();
-
-    /**
      * Return a list of data that should be shown in the index card.
      */
     public function indexCardData(): array

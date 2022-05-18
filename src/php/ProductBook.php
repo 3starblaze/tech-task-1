@@ -61,17 +61,6 @@ class ProductBook extends Product
         return 'Book';
     }
 
-    public function toJson()
-    {
-        return json_encode(array(
-            'id' => $this->getDatabaseId(),
-            'sku' => $this->getSku(),
-            'name' => $this->getName(),
-            'price' => $this->getPrice(),
-            'weight' => $this->getWeight(),
-        ));
-    }
-
     public function indexCardData(): array
     {
         return array_merge(

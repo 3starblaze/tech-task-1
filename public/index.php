@@ -47,4 +47,6 @@ $router->registerRoute('/api/products/new', function () {
     header("Location: /");
 });
 
+$router->registerDefaultHandler(['TechTask\Util\Util', 'showBaseView']);
+
 $router->handleRequest();

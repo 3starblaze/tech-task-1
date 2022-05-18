@@ -10,7 +10,7 @@ export default function Card(props) {
     <div className="card">
       <div className="heading">
         <input
-          id="delete-checkbox"
+          className="delete-checkbox"
           type="checkbox"
           checked={cardInfo.checked}
           onChange={ () => dispatch(toggleCheckbox(props.databaseId)) }/>

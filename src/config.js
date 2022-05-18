@@ -4,7 +4,7 @@ import RootPage from "./RootPage";
 import AddProductPage from "./AddProductPage";
 
 const config = {
-  baseUrl: 'http://localhost:8080',
+  baseUrl: 'http://localhost',
   defaultComponent: <NotFoundPage />,
   routes: {
     '/': {

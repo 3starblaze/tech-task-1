@@ -17,3 +17,9 @@
 ## Development
 
 Use `npx webpack` to build the frontend of the program once or `npx webpack --watch` to watch for the changes and build automatically.
+
+## Overview
+
+The application runs on LAMP stack via docker and docker-compose. The PHP entry point is `./public/index.php` and the most important files are located in `./src/`. `./apache/`, `./mysql/`, `./php/`, `docker-compose.yml` are files that are related to setting up docker and docker-compose.
+
+Routing is managed via custom class `TechTask\Router\Router` in the backend and in `./src/index.js` and `./src/config.js` in the frontend.

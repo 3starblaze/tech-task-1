@@ -58,17 +58,6 @@ class ProductDisc extends Product
         return 'DVD';
     }
 
-    public function toJson()
-    {
-        return json_encode(array(
-            'id' => $this->getDatabaseId(),
-            'sku' => $this->getSku(),
-            'name' => $this->getName(),
-            'price' => $this->getPrice(),
-            'discSize' => $this->getDiscSize(),
-        ));
-    }
-
     public function indexCardData(): array
     {
         return array_merge(

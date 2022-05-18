@@ -80,19 +80,6 @@ class ProductFurniture extends Product
         return array($this->height, $this->width, $this->length);
     }
 
-    public function toJson()
-    {
-        return json_encode(array(
-            'id' => $this->getDatabaseId(),
-            'sku' => $this->getSku(),
-            'name' => $this->getName(),
-            'price' => $this->getPrice(),
-            'height' => $this->getHeight(),
-            'width' => $this->getWidth(),
-            'length' => $this->getLength(),
-        ));
-    }
-
     public function indexCardData(): array
     {
         return array_merge(

@@ -12,6 +12,8 @@ class Router
 {
     private $routeHandlers = array();
 
+    private $defaultHandler = null;
+
     /**
      * Bind a callable to a route that is executed when user visits $route.
      *
@@ -26,6 +28,15 @@ class Router
     }
 
     /**
+     * Bind callable that is called when the requested route does not have a
+     * handler.
+     */
+    public function registerDefaultHandler(callable $handler)
+    {
+        $this->defaultHandler = $handler;
+    }
+
+    /**
      * Check the current route and trigger corresponding handler callable
      * (if it exists).
      */
@@ -35,6 +46,8 @@ class Router
 
         if (array_key_exists($uri, $this->routeHandlers)) {
             $this->routeHandlers[$uri]();
+        } elseif ($this->defaultHandler) {
+            ($this->defaultHandler)();
         } else {
             Util::throwError("Route does not exist!");
         }

@@ -52,11 +52,11 @@ export default function Root() {
               deleteIds(checkedCards)
                 .then(_ => location = location) // refresh page
             } }>
-            Mass delete
+            MASS DELETE
           </button>
 
           <button>
-            <a href={ route('add-product') }>Add</a>
+            <a href={ route('add-product') }>ADD</a>
           </button>
         </div>
       </header>

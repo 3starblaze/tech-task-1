@@ -62,7 +62,7 @@ footer {
     @include default-border;
     display: grid;
 
-    #delete-checkbox {
+    .delete-checkbox {
         margin: 0;
         margin-left: 1em;
         justify-self: start;
